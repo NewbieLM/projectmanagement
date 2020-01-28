@@ -11,6 +11,7 @@ public class SkillRepository {
     private static final String GET_SKILLS_BY_USER_ID = "SELECT s.* FROM company.skills s LEFT JOIN userskills us ON us.skillid = s.id WHERE us.userid = ?";
     private static final String INSERT_NEW_SKILL = "INSERT INTO company.skills (skill) VALUE (?)";
     private static final String INSERT_USER_SKILL = "INSERT INTO company.userskills (userid, skillid) VALUE (?, ?)";
+    private static final String DELETE_USER_SKILL = "DELETE FROM company.userskills WHERE userid = ? AND skillid = ?";
 
     public List<Skill> getUserSkills(Integer userId) throws SQLException {
         List<Skill> skills = new ArrayList<>();
@@ -30,7 +31,7 @@ public class SkillRepository {
         return skills;
     }
 
-    public boolean saveUserSkills(List<Skill> skills, Integer userId) throws SQLException {
+    public boolean updateUserSkills(List<Skill> skills, Integer userId) throws SQLException {
         List<Skill> storedSkills = getUserSkills(userId);
         Connection connection = Util.getConnection();
         connection.setAutoCommit(false);
@@ -43,12 +44,41 @@ public class SkillRepository {
             }
         }
 
-        int[] count = statement.executeBatch();
+        int[] saved = statement.executeBatch();
+        connection.commit();
+        Util.closeConnection(connection, statement, null);
+
+        List<Skill> removalSkills = new ArrayList<>();
+        for (Skill skill : storedSkills) {
+            if (!skills.contains(skill)){
+                removalSkills.add(skill);
+            }
+        }
+
+        boolean deleted = false;
+        if(removalSkills.size() > 0) {
+            deleted = deleteUserSkills(removalSkills, userId);
+        }
+
+        return saved.length > 0 || deleted;
+    }
+
+    public boolean deleteUserSkills(List<Skill> skills, Integer userId) throws SQLException {
+        Connection connection = Util.getConnection();
+        connection.setAutoCommit(false);
+        PreparedStatement statement = connection.prepareStatement(DELETE_USER_SKILL);
+        for (Skill skill : skills) {
+            statement.setInt(1, userId);
+            statement.setInt(2, skill.getId());
+            statement.addBatch();
+        }
+
+        int[] deleted = statement.executeBatch();
         connection.commit();
 
         Util.closeConnection(connection, statement, null);
 
-        return count.length > 0;
+        return deleted.length > 0;
     }
 
     public Integer saveNewSkill(Skill skill) throws SQLException {
@@ -69,5 +99,6 @@ public class SkillRepository {
 
         return generatedID;
     }
+
 
 }
