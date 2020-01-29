@@ -30,4 +30,21 @@ public class Util {
         }
     }
 
+    public static String arrayToQueryParameters(Object[] parameters) {
+        if (parameters.length == 0){
+            throw new RuntimeException("An array must contain at least one element");
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("(");
+
+        for (int i = 0; i < parameters.length; i++) {
+            stringBuilder.append(parameters[i]);
+            stringBuilder.append(", ");
+        }
+        stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
+
+        stringBuilder.append(")");
+        return stringBuilder.toString();
+    }
+
 }

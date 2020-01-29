@@ -3,10 +3,7 @@ package com.maksym.projectmanagement.repository;
 import com.maksym.projectmanagement.Util;
 import com.maksym.projectmanagement.model.Team;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,9 +27,30 @@ public class TeamRepository {
             String description = resultSet.getString(2);
             teams.add(new Team(id, description));
         }
+
+        Util.closeConnection(connection, statement, resultSet);
+
         return teams;
     }
 
+    public Team get(Integer teamId) throws SQLException {
+        Team team = null;
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(GET_TEAM_BY_ID);
+        statement.setInt(1, teamId);
+        ResultSet resultSet = statement.executeQuery();
+        if (resultSet.next()) {
+            Integer id = resultSet.getInt(1);
+            String description = resultSet.getString(2);
+            team = new Team(id, description);
+        }
+        Util.closeConnection(connection, statement, resultSet);
 
+        if (team != null) {
+            team.setUsers(userRepository.getByTeam(teamId));
+        }
+
+        return team;
+    }
 
 }

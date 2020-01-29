@@ -5,25 +5,37 @@ import com.maksym.projectmanagement.model.Skill;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SkillRepository {
-    private static final String GET_SKILLS_BY_USER_ID = "SELECT s.* FROM company.skills s LEFT JOIN userskills us ON us.skillid = s.id WHERE us.userid = ?";
+    private static final String GET_SKILLS_BY_USERS_ID = "SELECT us.userid, us.skillid, s.skill FROM company.userskills us LEFT JOIN company.skills s ON us.skillid = s.id WHERE us.userid IN";
     private static final String INSERT_NEW_SKILL = "INSERT INTO company.skills (skill) VALUE (?)";
     private static final String INSERT_USER_SKILL = "INSERT INTO company.userskills (userid, skillid) VALUE (?, ?)";
     private static final String DELETE_USER_SKILL = "DELETE FROM company.userskills WHERE userid = ? AND skillid = ?";
 
-    public List<Skill> getUserSkills(Integer userId) throws SQLException {
-        List<Skill> skills = new ArrayList<>();
+    public Map<Integer, List<Skill>> getUserSkills(Integer... usersId) throws SQLException {
+        Map<Integer, List<Skill>> skills = new HashMap<>();
+        String parameters = Util.arrayToQueryParameters(usersId);
         Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(GET_SKILLS_BY_USER_ID);
-        statement.setInt(1, userId);
-        ResultSet resultSet = statement.executeQuery();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(GET_SKILLS_BY_USERS_ID + parameters);
 
         while (resultSet.next()) {
-            Integer id = resultSet.getInt(1);
-            String skill = resultSet.getString(2);
-            skills.add(new Skill(id, skill));
+            Integer userId = resultSet.getInt(1);
+            Integer skilId = resultSet.getInt(2);
+            String description = resultSet.getString(3);
+            Skill skill = new Skill(skilId, description);
+
+            if (skills.containsKey(userId)) {
+                skills.get(userId).add(skill);
+            } else {
+                List<Skill> sk = new ArrayList<>();
+                sk.add(skill);
+                skills.put(userId, sk);
+            }
+
         }
 
         Util.closeConnection(connection, statement, resultSet);
@@ -32,7 +44,7 @@ public class SkillRepository {
     }
 
     public boolean updateUserSkills(List<Skill> skills, Integer userId) throws SQLException {
-        List<Skill> storedSkills = getUserSkills(userId);
+        List<Skill> storedSkills = getUserSkills(userId).getOrDefault(userId, new ArrayList<>());
         Connection connection = Util.getConnection();
         connection.setAutoCommit(false);
         PreparedStatement statement = connection.prepareStatement(INSERT_USER_SKILL);
@@ -50,13 +62,13 @@ public class SkillRepository {
 
         List<Skill> removalSkills = new ArrayList<>();
         for (Skill skill : storedSkills) {
-            if (!skills.contains(skill)){
+            if (!skills.contains(skill)) {
                 removalSkills.add(skill);
             }
         }
 
         boolean deleted = false;
-        if(removalSkills.size() > 0) {
+        if (removalSkills.size() > 0) {
             deleted = deleteUserSkills(removalSkills, userId);
         }
 

@@ -34,9 +34,23 @@ public class Team {
         return users;
     }
 
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
     @Override
     public String toString() {
         return "id=" + id +
-                ", description='" + description;
+                ", description=" + description + "\n" +
+                "Users: \n" + usersToString();
+    }
+
+    private String usersToString(){
+        StringBuilder stringBuilder = new StringBuilder();
+        for (User user : users) {
+            stringBuilder.append(user);
+            stringBuilder.append("----------------------- \n");
+        }
+        return stringBuilder.toString();
     }
 }

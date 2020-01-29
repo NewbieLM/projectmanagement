@@ -16,7 +16,11 @@ public class Main {
         SkillRepository skillRepository = new SkillRepository();
         UserRepository userRepository = new UserRepository(skillRepository);
         TeamRepository teamRepository = new TeamRepository(userRepository);
-        System.out.println(teamRepository.getAll());
+        Integer[] ids = {5, 6, 7, 1000 };
+
+       System.out.println(teamRepository.get(5));
+       // System.out.println(userRepository.get(5));
+
 
 
 /*

@@ -5,10 +5,14 @@ import com.maksym.projectmanagement.model.Skill;
 import com.maksym.projectmanagement.model.User;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class UserRepository {
-    private static final String GET_USER_BY_ID = "SELECT * FROM company.users WHERE id = ?";
+    private static final String GET_USERS = "SELECT * FROM company.users WHERE id IN ";
+    private static final String GET_USERS_BY_TEAM_ID = "SELECT userid FROM company.teamusers WHERE teamid = ?";
     private static final String SAVE_USER = "INSERT INTO company.users (name) VALUE (?)";
     private static final String DELETE_USER = "DELETE FROM company.users WHERE id = ?";
     private static final String UPDATE_USER = "UPDATE company.users SET name = ? WHERE users.id = ?";
@@ -22,22 +26,45 @@ public class UserRepository {
     private UserRepository() {
     }
 
-    public User getUser(Integer userId) throws SQLException {
-        User user = null;
+    public List<User> get(Integer... usersId) throws SQLException {
+        List<User> users = new ArrayList<>();
+        String parameters = Util.arrayToQueryParameters(usersId);
+        Map<Integer, List<Skill>> skills = skillRepository.getUserSkills(usersId);
         Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(GET_USER_BY_ID);
-        statement.setInt(1, userId);
-        ResultSet resultSet = statement.executeQuery();
-        if (resultSet.next()) {
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(GET_USERS + parameters);
+
+
+        while (resultSet.next()) {
             Integer id = resultSet.getInt(1);
             String name = resultSet.getString(2);
-            List<Skill> skills = skillRepository.getUserSkills(userId);
-            user = new User(id, name, skills);
+            List<Skill> userSkills = skills.getOrDefault(id, new ArrayList<>());
+            users.add(new User(id, name, userSkills));
         }
 
         Util.closeConnection(connection, statement, resultSet);
-        return user;
+
+        return users;
     }
+
+    public List<User> getByTeam(Integer teamId) throws SQLException {
+        Integer[] teammates;
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(GET_USERS_BY_TEAM_ID);
+        statement.setInt(1, teamId);
+        ResultSet resultSet = statement.executeQuery();
+        resultSet.last();
+        teammates = new Integer[resultSet.getRow()];
+        resultSet.beforeFirst();
+        for (int i = 0; resultSet.next(); i++) {
+            teammates[i] = resultSet.getInt(1);
+        }
+
+        Util.closeConnection(connection, statement, resultSet);
+
+        return teammates.length == 0 ? new ArrayList<>() : get(teammates);
+    }
+
 
     public boolean save(User user) throws SQLException {
         Connection connection = Util.getConnection();
@@ -57,7 +84,7 @@ public class UserRepository {
 
         Util.closeConnection(connection, statement, resultSet);
 
-        return updated > 0 && skillsUpdated ;
+        return updated > 0 && skillsUpdated;
     }
 
     public boolean delete(Integer userId) throws SQLException {
@@ -71,7 +98,7 @@ public class UserRepository {
         return updated > 0;
     }
 
-    public boolean update (User user) throws SQLException {
+    public boolean update(User user) throws SQLException {
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(UPDATE_USER);
         statement.setString(1, user.getName());
@@ -83,7 +110,7 @@ public class UserRepository {
 
         boolean skillsUpdated = skillRepository.updateUserSkills(user.getSkills(), user.getId());
 
-     return updated > 0 && skillsUpdated;
+        return updated > 0 && skillsUpdated;
     }
 
 }
