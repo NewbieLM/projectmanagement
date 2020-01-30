@@ -12,7 +12,7 @@ import java.util.Map;
 public class SkillRepository {
     private static final String GET_SKILLS_BY_USERS_ID = "SELECT us.userid, us.skillid, s.skill FROM company.userskills us LEFT JOIN company.skills s ON us.skillid = s.id WHERE us.userid IN";
     private static final String INSERT_NEW_SKILL = "INSERT INTO company.skills (skill) VALUE (?)";
-    private static final String INSERT_USER_SKILL = "INSERT INTO company.userskills (userid, skillid) VALUE (?, ?)";
+    private static final String ADD_USER_SKILL = "INSERT INTO company.userskills (userid, skillid) VALUE (?, ?)";
     private static final String DELETE_USER_SKILL = "DELETE FROM company.userskills WHERE userid = ? AND skillid = ?";
 
     public Map<Integer, List<Skill>> getUserSkills(Integer... usersId) throws SQLException {
@@ -47,7 +47,7 @@ public class SkillRepository {
         List<Skill> storedSkills = getUserSkills(userId).getOrDefault(userId, new ArrayList<>());
         Connection connection = Util.getConnection();
         connection.setAutoCommit(false);
-        PreparedStatement statement = connection.prepareStatement(INSERT_USER_SKILL);
+        PreparedStatement statement = connection.prepareStatement(ADD_USER_SKILL);
         for (Skill skill : skills) {
             if (!storedSkills.contains(skill)) {
                 statement.setInt(1, userId);
@@ -58,7 +58,7 @@ public class SkillRepository {
 
         int[] saved = statement.executeBatch();
         connection.commit();
-        Util.closeConnection(connection, statement, null);
+        Util.closeConnection(connection, statement);
 
         List<Skill> removalSkills = new ArrayList<>();
         for (Skill skill : storedSkills) {
@@ -88,7 +88,7 @@ public class SkillRepository {
         int[] deleted = statement.executeBatch();
         connection.commit();
 
-        Util.closeConnection(connection, statement, null);
+        Util.closeConnection(connection, statement);
 
         return deleted.length > 0;
     }

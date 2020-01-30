@@ -1,6 +1,7 @@
 package com.maksym.projectmanagement;
 
 import com.maksym.projectmanagement.model.Skill;
+import com.maksym.projectmanagement.model.Team;
 import com.maksym.projectmanagement.model.User;
 import com.maksym.projectmanagement.repository.SkillRepository;
 import com.maksym.projectmanagement.repository.TeamRepository;
@@ -16,9 +17,18 @@ public class Main {
         SkillRepository skillRepository = new SkillRepository();
         UserRepository userRepository = new UserRepository(skillRepository);
         TeamRepository teamRepository = new TeamRepository(userRepository);
-        Integer[] ids = {5, 6, 7, 1000 };
 
-       System.out.println(teamRepository.get(5));
+        ArrayList<User> users = new ArrayList<>();
+        users.add(new User(4,"dd", null));
+        users.add(new User(5,"dd", null));
+        users.add(new User(3,"dd", null));
+        users.add(new User(1,"dd", null));
+        users.add(new User(2,"dd", null));
+        //users.add(new User(4,"dd", null));
+
+        Team team = new Team(5,"TEAM_555", users);
+
+       System.out.println(teamRepository.update(team));
        // System.out.println(userRepository.get(5));
 
 

@@ -6,7 +6,6 @@ import com.maksym.projectmanagement.model.User;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ public class UserRepository {
     private static final String GET_USERS_BY_TEAM_ID = "SELECT userid FROM company.teamusers WHERE teamid = ?";
     private static final String SAVE_USER = "INSERT INTO company.users (name) VALUE (?)";
     private static final String DELETE_USER = "DELETE FROM company.users WHERE id = ?";
-    private static final String UPDATE_USER = "UPDATE company.users SET name = ? WHERE users.id = ?";
+    private static final String UPDATE_USER = "UPDATE company.users SET name = ? WHERE id = ?";
 
     private SkillRepository skillRepository;
 
@@ -93,7 +92,7 @@ public class UserRepository {
         statement.setInt(1, userId);
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement, null);
+        Util.closeConnection(connection, statement);
 
         return updated > 0;
     }
@@ -106,7 +105,7 @@ public class UserRepository {
 
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement, null);
+        Util.closeConnection(connection, statement);
 
         boolean skillsUpdated = skillRepository.updateUserSkills(user.getSkills(), user.getId());
 

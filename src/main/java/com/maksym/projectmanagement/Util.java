@@ -30,6 +30,10 @@ public class Util {
         }
     }
 
+    public static void closeConnection(Connection connection, Statement statement) throws SQLException {
+        closeConnection(connection, statement, null);
+    }
+
     public static String arrayToQueryParameters(Object[] parameters) {
         if (parameters.length == 0){
             throw new RuntimeException("An array must contain at least one element");
@@ -37,8 +41,8 @@ public class Util {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("(");
 
-        for (int i = 0; i < parameters.length; i++) {
-            stringBuilder.append(parameters[i]);
+        for (Object obj : parameters) {
+            stringBuilder.append(obj);
             stringBuilder.append(", ");
         }
         stringBuilder.delete(stringBuilder.length() - 2, stringBuilder.length());
