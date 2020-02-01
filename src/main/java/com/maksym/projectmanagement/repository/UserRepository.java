@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 
 public class UserRepository {
-    private static final String GET_USERS = "SELECT * FROM company.users WHERE id IN ";
-    private static final String GET_USERS_BY_TEAM_ID = "SELECT userid FROM company.teamusers WHERE teamid = ?";
     private static final String SAVE_USER = "INSERT INTO company.users (name) VALUE (?)";
+    private static final String GET_USERS_BY_TEAM_ID = "SELECT userid FROM company.teamusers WHERE teamid = ?";
+    private static final String GET_USERS = "SELECT * FROM company.users WHERE id IN ";
     private static final String DELETE_USER = "DELETE FROM company.users WHERE id = ?";
     private static final String UPDATE_USER = "UPDATE company.users SET name = ? WHERE id = ?";
 
@@ -22,7 +22,28 @@ public class UserRepository {
         this.skillRepository = skillRepository;
     }
 
-    private UserRepository() {
+    public User save(User user) throws SQLException {
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, user.getName());
+
+        int updated = statement.executeUpdate();
+        ResultSet resultSet = statement.getGeneratedKeys();
+        int userId = 0;
+        if (updated > 0) {
+            resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+            userId = resultSet.getInt(1);
+        }
+
+        Util.closeConnection(connection, statement, resultSet);
+
+        if (userId != 0) {
+            user.setId(userId);
+            return user;
+        }
+
+        return null;
     }
 
     public List<User> get(Integer... usersId) throws SQLException {
@@ -64,39 +85,6 @@ public class UserRepository {
         return teammates.length == 0 ? new ArrayList<>() : get(teammates);
     }
 
-
-    public boolean save(User user) throws SQLException {
-        Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(SAVE_USER, Statement.RETURN_GENERATED_KEYS);
-        statement.setString(1, user.getName());
-
-        int updated = statement.executeUpdate();
-        ResultSet resultSet = statement.getGeneratedKeys();
-        int userId = 0;
-        if (updated > 0) {
-            resultSet = statement.getGeneratedKeys();
-            resultSet.next();
-            userId = resultSet.getInt(1);
-        }
-
-        boolean skillsUpdated = skillRepository.updateUserSkills(user.getSkills(), userId);
-
-        Util.closeConnection(connection, statement, resultSet);
-
-        return updated > 0 && skillsUpdated;
-    }
-
-    public boolean delete(Integer userId) throws SQLException {
-        Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(DELETE_USER);
-        statement.setInt(1, userId);
-        int updated = statement.executeUpdate();
-
-        Util.closeConnection(connection, statement);
-
-        return updated > 0;
-    }
-
     public boolean update(User user) throws SQLException {
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(UPDATE_USER);
@@ -110,6 +98,17 @@ public class UserRepository {
         boolean skillsUpdated = skillRepository.updateUserSkills(user.getSkills(), user.getId());
 
         return updated > 0 && skillsUpdated;
+    }
+
+    public boolean delete(Integer userId) throws SQLException {
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(DELETE_USER);
+        statement.setInt(1, userId);
+        int updated = statement.executeUpdate();
+
+        Util.closeConnection(connection, statement);
+
+        return updated > 0;
     }
 
 }

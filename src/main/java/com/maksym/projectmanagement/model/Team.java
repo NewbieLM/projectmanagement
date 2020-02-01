@@ -22,6 +22,10 @@ public class Team {
         return id;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -40,14 +44,21 @@ public class Team {
 
     @Override
     public String toString() {
-        return "id=" + id +
-                ", description=" + description + "\n" +
-                "Users: \n" + usersToString();
+        String str = "id=" + id + ", description=" + description + "\n";
+        if (users.size() > 0) {
+            str += usersToString();
+        }
+        str += "=========================";
+
+        return str;
     }
 
-    private String usersToString(){
+    private String usersToString() {
         StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Users:");
+        stringBuilder.append("\n");
         for (User user : users) {
+            stringBuilder.append("-");
             stringBuilder.append(user);
             stringBuilder.append("----------------------- \n");
         }

@@ -2,19 +2,21 @@ package com.maksym.projectmanagement.repository;
 
 import com.maksym.projectmanagement.Util;
 import com.maksym.projectmanagement.model.Team;
-import com.maksym.projectmanagement.model.User;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TeamRepository {
-    private static final String GET_ALL_TEAMS = "SELECT * FROM company.teams";
+    private static final String SAVE_TEAM = "INSERT INTO company.teams (description) VALUE (?)";
     private static final String GET_TEAM_BY_ID = "SELECT * FROM company.teams WHERE id = ?";
-    private static final String DELETE_TEAM = "DELETE FROM company.teams WHERE id = ?";
+    private static final String GET_ALL_TEAMS = "SELECT * FROM company.teams";
+    private static final String GET_TEAM_BY_PROJECT_ID = "SELECT t.id, t.description FROM company.teams t LEFT JOIN company.projectteams pt ON pt.teamid = t.id WHERE pt.projectid = ?";
     private static final String UPDATE_TEAM = "UPDATE company.teams SET description = ? WHERE id = ?";
+    private static final String DELETE_TEAM = "DELETE FROM company.teams WHERE id = ?";
     private static final String ADD_USER_TO_TEAM = "INSERT INTO company.teamusers (teamid, userid) VALUE (?, ?)";
     private static final String DELETE_USER_FROM_TEAM = "DELETE FROM company.teamusers WHERE teamid = ? AND userid IN";
+
 
     private UserRepository userRepository;
 
@@ -22,20 +24,27 @@ public class TeamRepository {
         this.userRepository = userRepository;
     }
 
-    public List<Team> getAll() throws SQLException {
+    public Team save(Team team) throws SQLException {
         Connection connection = Util.getConnection();
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(GET_ALL_TEAMS);
-        List<Team> teams = new ArrayList<>();
-        while (resultSet.next()) {
-            Integer id = resultSet.getInt(1);
-            String description = resultSet.getString(2);
-            teams.add(new Team(id, description));
+        PreparedStatement statement = connection.prepareStatement(SAVE_TEAM, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, team.getDescription());
+
+        int updated = statement.executeUpdate();
+        ResultSet resultSet = statement.getGeneratedKeys();
+        int teamId = 0;
+        if (updated > 0) {
+            resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+            teamId = resultSet.getInt(1);
         }
 
         Util.closeConnection(connection, statement, resultSet);
+        if (teamId != 0) {
+            team.setId(teamId);
+            return team;
+        }
 
-        return teams;
+        return null;
     }
 
     public Team get(Integer teamId) throws SQLException {
@@ -58,10 +67,39 @@ public class TeamRepository {
         return team;
     }
 
+    public List<Team> getAll() throws SQLException {
+        Connection connection = Util.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(GET_ALL_TEAMS);
+        List<Team> teams = new ArrayList<>();
+        while (resultSet.next()) {
+            Integer id = resultSet.getInt(1);
+            String description = resultSet.getString(2);
+            teams.add(new Team(id, description));
+        }
+
+        Util.closeConnection(connection, statement, resultSet);
+
+        return teams;
+    }
+
+    public List<Team> getByProject(Integer projectId) throws SQLException {
+        List<Team> teams = new ArrayList<>();
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(GET_TEAM_BY_PROJECT_ID);
+        statement.setInt(1, projectId);
+        ResultSet resultSet = statement.executeQuery();
+        while (resultSet.next()) {
+            Integer id = resultSet.getInt(1);
+            String description = resultSet.getString(2);
+            teams.add(new Team(id, description));
+        }
+        Util.closeConnection(connection, statement, resultSet);
+
+        return teams;
+    }
 
     public boolean update(Team team) throws SQLException {
-        List<User> storedUsers = userRepository.getByTeam(team.getId());
-
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(UPDATE_TEAM);
         statement.setString(1, team.getDescription());
@@ -70,30 +108,18 @@ public class TeamRepository {
 
         Util.closeConnection(connection, statement);
 
-        List<Integer> newUsers = new ArrayList<>();
-        for (User user : team.getUsers()) {
-            if (!storedUsers.contains(user)) {
-                newUsers.add(user.getId());
-            }
-        }
-        boolean newUsersSaved = true;
-        if (newUsers.size() > 0) {
-            newUsersSaved = addUser(team.getId(), newUsers);
-        }
+        return updated > 0;
+    }
 
-        List<Integer> removalUsers = new ArrayList<>();
-        for (User user : storedUsers) {
-            if (!team.getUsers().contains(user)) {
-                removalUsers.add(user.getId());
-            }
-        }
-        boolean usersDeleted = true;
-        if (removalUsers.size() > 0) {
-            usersDeleted = deleteUser(team.getId(), removalUsers);
-        }
+    public boolean delete(Integer teamId) throws SQLException {
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(DELETE_TEAM);
+        statement.setInt(1, teamId);
+        int updated = statement.executeUpdate();
 
+        Util.closeConnection(connection, statement);
 
-        return updated > 0 && newUsersSaved && usersDeleted;
+        return updated > 0;
     }
 
     public boolean addUser(Integer teamId, List<Integer> usersId) throws SQLException {
@@ -121,17 +147,6 @@ public class TeamRepository {
         Util.closeConnection(connection, statement);
 
         return deleted > 0;
-    }
-
-    public boolean delete(Integer teamId) throws SQLException {
-        Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(DELETE_TEAM);
-        statement.setInt(1, teamId);
-        int updated = statement.executeUpdate();
-
-        Util.closeConnection(connection, statement);
-
-        return updated > 0;
     }
 
 

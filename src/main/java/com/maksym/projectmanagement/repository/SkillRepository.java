@@ -10,10 +10,45 @@ import java.util.List;
 import java.util.Map;
 
 public class SkillRepository {
-    private static final String GET_SKILLS_BY_USERS_ID = "SELECT us.userid, us.skillid, s.skill FROM company.userskills us LEFT JOIN company.skills s ON us.skillid = s.id WHERE us.userid IN";
     private static final String INSERT_NEW_SKILL = "INSERT INTO company.skills (skill) VALUE (?)";
+    private static final String UPDATE_SKILL = "UPDATE company.skills SET skill = ?  WHERE id = ?";
+    private static final String GET_SKILLS_BY_USERS_ID = "SELECT us.userid, us.skillid, s.skill FROM company.userskills us LEFT JOIN company.skills s ON us.skillid = s.id WHERE us.userid IN";
     private static final String ADD_USER_SKILL = "INSERT INTO company.userskills (userid, skillid) VALUE (?, ?)";
     private static final String DELETE_USER_SKILL = "DELETE FROM company.userskills WHERE userid = ? AND skillid = ?";
+
+    public Skill saveNewSkill(Skill skill) throws SQLException {
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(INSERT_NEW_SKILL, Statement.RETURN_GENERATED_KEYS);
+        statement.setString(1, skill.getDescription());
+        int updated = statement.executeUpdate();
+
+        int generatedID = 0;
+        ResultSet resultSet = null;
+        if (updated > 0) {
+            resultSet = statement.getGeneratedKeys();
+            resultSet.next();
+            generatedID = resultSet.getInt(1);
+        }
+
+        Util.closeConnection(connection, statement, resultSet);
+        skill.setId(generatedID);
+
+        return skill;
+    }
+
+
+    public boolean updateSkill(Skill skill) throws SQLException {
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(UPDATE_SKILL);
+        statement.setString(1, skill.getDescription());
+        statement.setInt(2, skill.getId());
+        int updated = statement.executeUpdate();
+
+        Util.closeConnection(connection, statement);
+
+        return updated > 0;
+    }
+
 
     public Map<Integer, List<Skill>> getUserSkills(Integer... usersId) throws SQLException {
         Map<Integer, List<Skill>> skills = new HashMap<>();
@@ -92,25 +127,5 @@ public class SkillRepository {
 
         return deleted.length > 0;
     }
-
-    public Integer saveNewSkill(Skill skill) throws SQLException {
-        Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(INSERT_NEW_SKILL, Statement.RETURN_GENERATED_KEYS);
-        statement.setString(1, skill.getDescription());
-        int updated = statement.executeUpdate();
-
-        int generatedID = 0;
-        ResultSet resultSet = null;
-        if (updated > 0) {
-            resultSet = statement.getGeneratedKeys();
-            resultSet.next();
-            generatedID = resultSet.getInt(1);
-        }
-
-        Util.closeConnection(connection, statement, resultSet);
-
-        return generatedID;
-    }
-
 
 }

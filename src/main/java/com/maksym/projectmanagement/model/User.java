@@ -26,18 +26,30 @@ public class User {
         return skills;
     }
 
+    public void setSkills(List<Skill> skills) {
+        this.skills = skills;
+    }
+
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public String toString() {
-        return    "id=" + id +
-                ", name='" + name + '\'' + "\n"+
+        return "id=" + id +
+                ", name='" + name + '\'' + "\n" +
                 "skills:" + skills + "\n";
     }
 
