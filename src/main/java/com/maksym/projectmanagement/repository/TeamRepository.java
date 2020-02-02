@@ -20,10 +20,6 @@ public class TeamRepository {
 
     private UserRepository userRepository;
 
-    public TeamRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     public Team save(Team team) throws SQLException {
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(SAVE_TEAM, Statement.RETURN_GENERATED_KEYS);
@@ -149,5 +145,7 @@ public class TeamRepository {
         return deleted > 0;
     }
 
-
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 }

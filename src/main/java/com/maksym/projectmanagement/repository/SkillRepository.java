@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 public class SkillRepository {
+    private static final String GET_ALL_SKILLS = "SELECT * FROM company.skills";
     private static final String INSERT_NEW_SKILL = "INSERT INTO company.skills (skill) VALUE (?)";
     private static final String UPDATE_SKILL = "UPDATE company.skills SET skill = ?  WHERE id = ?";
     private static final String GET_SKILLS_BY_USERS_ID = "SELECT us.userid, us.skillid, s.skill FROM company.userskills us LEFT JOIN company.skills s ON us.skillid = s.id WHERE us.userid IN";
@@ -36,6 +37,23 @@ public class SkillRepository {
         return skill;
     }
 
+    public List<Skill> getAll() throws SQLException {
+        List<Skill> skills = new ArrayList<>();
+        Connection connection = Util.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(GET_ALL_SKILLS);
+
+        while (resultSet.next()) {
+            Integer skillId = resultSet.getInt(1);
+            String description = resultSet.getString(2);
+            Skill skill = new Skill(skillId, description);
+            skills.add(skill);
+            }
+
+        Util.closeConnection(connection, statement, resultSet);
+
+        return skills;
+    }
 
     public boolean updateSkill(Skill skill) throws SQLException {
         Connection connection = Util.getConnection();

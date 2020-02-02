@@ -12,15 +12,12 @@ import java.util.Map;
 public class UserRepository {
     private static final String SAVE_USER = "INSERT INTO company.users (name) VALUE (?)";
     private static final String GET_USERS_BY_TEAM_ID = "SELECT userid FROM company.teamusers WHERE teamid = ?";
-    private static final String GET_USERS = "SELECT * FROM company.users WHERE id IN ";
+    private static final String GET_USERS_BY_ID = "SELECT * FROM company.users WHERE id IN ";
+    private static final String GET_ALL_USERS = "SELECT * FROM company.users";
     private static final String DELETE_USER = "DELETE FROM company.users WHERE id = ?";
     private static final String UPDATE_USER = "UPDATE company.users SET name = ? WHERE id = ?";
 
     private SkillRepository skillRepository;
-
-    public UserRepository(SkillRepository skillRepository) {
-        this.skillRepository = skillRepository;
-    }
 
     public User save(User user) throws SQLException {
         Connection connection = Util.getConnection();
@@ -40,6 +37,7 @@ public class UserRepository {
 
         if (userId != 0) {
             user.setId(userId);
+            skillRepository.updateUserSkills(user.getSkills(), userId);
             return user;
         }
 
@@ -52,7 +50,7 @@ public class UserRepository {
         Map<Integer, List<Skill>> skills = skillRepository.getUserSkills(usersId);
         Connection connection = Util.getConnection();
         Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(GET_USERS + parameters);
+        ResultSet resultSet = statement.executeQuery(GET_USERS_BY_ID + parameters);
 
 
         while (resultSet.next()) {
@@ -63,6 +61,31 @@ public class UserRepository {
         }
 
         Util.closeConnection(connection, statement, resultSet);
+
+        return users;
+    }
+
+    public List<User> getAll() throws SQLException {
+        List<User> users = new ArrayList<>();
+
+        Connection connection = Util.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(GET_ALL_USERS);
+
+        while (resultSet.next()) {
+            Integer id = resultSet.getInt(1);
+            String name = resultSet.getString(2);
+            users.add(new User(id, name, null));
+        }
+
+        Util.closeConnection(connection, statement, resultSet);
+
+        Map<Integer, List<Skill>> skills = skillRepository.getUserSkills(users.stream().map(u -> u.getId()).toArray(Integer[]::new));
+        for (User user : users) {
+            List<Skill> userSkills = skills.getOrDefault(user.getId(), new ArrayList<>());
+            user.setSkills(userSkills);
+        }
+
 
         return users;
     }
@@ -111,4 +134,7 @@ public class UserRepository {
         return updated > 0;
     }
 
+    public void setSkillRepository(SkillRepository skillRepository) {
+        this.skillRepository = skillRepository;
+    }
 }

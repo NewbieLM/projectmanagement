@@ -33,7 +33,7 @@ public class Skill {
 
     @Override
     public String toString() {
-        return description;
+        return "[id " + id + "]" + description;
     }
 
     @Override

@@ -23,11 +23,6 @@ public class ProjectRepository {
     private TeamRepository teamRepository;
     private CustomerRepository customerRepository;
 
-    public ProjectRepository(TeamRepository teamRepository, CustomerRepository customerRepository) {
-        this.teamRepository = teamRepository;
-        this.customerRepository = customerRepository;
-    }
-
     public Project save(Project project) throws SQLException {
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(SAVE_PROJECT, Statement.RETURN_GENERATED_KEYS);
@@ -161,4 +156,11 @@ public class ProjectRepository {
         return deleted > 0;
     }
 
+    public void setTeamRepository(TeamRepository teamRepository) {
+        this.teamRepository = teamRepository;
+    }
+
+    public void setCustomerRepository(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
+    }
 }
