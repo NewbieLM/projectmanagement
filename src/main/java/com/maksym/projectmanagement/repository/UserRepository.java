@@ -120,7 +120,7 @@ public class UserRepository {
 
         boolean skillsUpdated = skillRepository.updateUserSkills(user.getSkills(), user.getId());
 
-        return updated > 0 && skillsUpdated;
+        return updated > 0 || skillsUpdated;
     }
 
     public boolean delete(Integer userId) throws SQLException {

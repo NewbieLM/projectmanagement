@@ -4,6 +4,7 @@ import com.maksym.projectmanagement.controller.SkillController;
 import com.maksym.projectmanagement.controller.UserController;
 import com.maksym.projectmanagement.repository.*;
 import com.maksym.projectmanagement.view.MainView;
+import com.maksym.projectmanagement.view.SkillView;
 import com.maksym.projectmanagement.view.UserView;
 
 public class Initializer {
@@ -18,6 +19,7 @@ public class Initializer {
 
     private MainView mainView;
     private UserView userView;
+    private SkillView skillView;
 
     public Initializer() {
         try {
@@ -42,6 +44,7 @@ public class Initializer {
 
         mainView = new MainView();
         userView = new UserView();
+        skillView = new SkillView();
 
 
         userRepository.setSkillRepository(skillRepository);
@@ -55,9 +58,12 @@ public class Initializer {
         skillController.setSkillRepository(skillRepository);
 
         mainView.setUserView(userView);
+        mainView.setSkillView(skillView);
         userView.setMainView(mainView);
         userView.setUserController(userController);
         userView.setSkillController(skillController);
+        skillView.setSkillController(skillController);
+
     }
 
 

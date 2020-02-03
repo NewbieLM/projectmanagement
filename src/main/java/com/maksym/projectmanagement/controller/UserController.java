@@ -2,7 +2,6 @@ package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Skill;
 import com.maksym.projectmanagement.model.User;
-import com.maksym.projectmanagement.repository.SkillRepository;
 import com.maksym.projectmanagement.repository.UserRepository;
 
 import java.sql.SQLException;
@@ -13,12 +12,12 @@ public class UserController {
     private UserRepository userRepository;
     private SkillController skillController;
 
-    public User saveUser (String name, String userSkills){
+    public User saveUser(String name, String userSkills) {
         List<Skill> savedSkills = skillController.getAllSkills();
         List<Skill> skills = new ArrayList<>();
-        for (String userSkill : userSkills.trim().split("\\s+")){
-            for (Skill skill : savedSkills){
-                if(skill.getDescription().equalsIgnoreCase(userSkill)){
+        for (String userSkill : userSkills.trim().split("\\s+")) {
+            for (Skill skill : savedSkills) {
+                if (skill.getDescription().equalsIgnoreCase(userSkill)) {
                     skills.add(skill);
                     break;
                 }
@@ -32,6 +31,16 @@ public class UserController {
         }
 
         return user;
+    }
+
+    public boolean update(User user) {
+        boolean result = false;
+        try {
+            result = userRepository.update(user);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public List<User> getAll() {

@@ -18,8 +18,17 @@ public class User {
         this(0, name, new ArrayList<>());
     }
 
-    public void addSkills(Skill skill) {
+    public void addSkill(Skill skill) {
         this.skills.add(skill);
+    }
+
+    public void deleteSkill(Integer skillId) {
+        for(Skill skill : skills){
+            if(skill.getId() == skillId){
+                skills.remove(skill);
+                break;
+            }
+        }
     }
 
     public List<Skill> getSkills() {

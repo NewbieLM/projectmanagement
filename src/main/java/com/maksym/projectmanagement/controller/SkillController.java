@@ -23,4 +23,34 @@ public class SkillController {
         }
         return result;
     }
+
+    public Skill addNewSkill(String description) {
+        Skill skill = new Skill(description);
+        try {
+            skill = skillRepository.saveNewSkill(skill);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return skill;
+    }
+
+    public Skill getSkill(Integer skillId) {
+        Skill skill = null;
+        try {
+            skill = skillRepository.get(skillId);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return skill;
+    }
+
+    public boolean updateSkill(Skill skill) {
+        boolean updated = false;
+        try {
+            updated = skillRepository.updateSkill(skill);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return updated;
+    }
 }

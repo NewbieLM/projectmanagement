@@ -2,12 +2,11 @@ package com.maksym.projectmanagement.view;
 
 import com.maksym.projectmanagement.controller.SkillController;
 import com.maksym.projectmanagement.controller.UserController;
+import com.maksym.projectmanagement.model.Skill;
 import com.maksym.projectmanagement.model.User;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.maksym.projectmanagement.Util.*;
 
@@ -15,17 +14,16 @@ public class UserView {
     private MainView mainView;
     private UserController userController;
     private SkillController skillController;
-    private Map<String, List<String>> actions;
+    private List<String> actions;
 
     public UserView() {
-        this.actions = new HashMap<>();
-        initActions();
+        this.actions = initActions();
     }
 
     public void usersMenu() {
         Integer elementId = -1;
         while (elementId != 5) {
-            writeToConsole(actions.get("usersMenu"));
+            writeToConsole(actions);
             elementId = readNumberFromConsole("Please enter the number of the needed section");
             switch (elementId) {
                 case 1:
@@ -71,21 +69,33 @@ public class UserView {
         writeToConsole("3. Delete skill");
 
         Integer elementId = readNumberFromConsole("Please enter the number of the needed section");
+        Integer skillId = null;
         switch (elementId) {
             case 1:
                 user.setName(readFromConsole("Enter new name"));
                 break;
             case 2:
-                writeToConsole(skillController.getAllSkills());
-                Integer skillId = readNumberFromConsole("To add a new skill, enter it id");
-                ////for ()//////////////////////////////////////////////
+                List<Skill> skills = skillController.getAllSkills();
+                writeToConsole(skills);
+                skillId = readNumberFromConsole("To add a new skill, enter skill ID");
+
+                for (Skill skill : skills) {
+                    if (skill.getId() == skillId) {
+                        user.addSkill(skill);
+                    }
+                }
                 break;
             case 3:
-                updateUser();
+                skillId = readNumberFromConsole("To delete skill, enter skill ID");
+                if (skillId != null) {
+                    user.deleteSkill(skillId);
+                }
                 break;
         }
 
-        userController.getUser(userId);
+        boolean updated = userController.update(user);
+        writeToConsole(updated ? "SUCCESS" : "FAILED");
+        writeToConsole(userController.getUser(userId));
     }
 
     private void deleteUser() {
@@ -112,7 +122,7 @@ public class UserView {
     }
 
 
-    private void initActions() {
+    private List<String> initActions() {
         ArrayList<String> usersMenu = new ArrayList<String>() {{
             add("1. Add new user");
             add("2. Show all users");
@@ -120,7 +130,7 @@ public class UserView {
             add("4. Delete user");
             add("5. Back to main menu");
         }};
-        actions.put("usersMenu", usersMenu);
+        return usersMenu;
     }
 
     public void setMainView(MainView mainView) {

@@ -1,7 +1,5 @@
 package com.maksym.projectmanagement.view;
 
-import com.maksym.projectmanagement.controller.UserController;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +11,7 @@ import static com.maksym.projectmanagement.Util.writeToConsole;
 
 public class MainView {
     private UserView userView;
+    private SkillView skillView;
     private Map<String, List<String>> actions;
 
     public MainView() {
@@ -29,6 +28,9 @@ public class MainView {
                 case 1:
                     userView.usersMenu();
                     break;
+                case 2:
+                    skillView.skillsMenu();
+                    break;
                 case 5:
                     break;
             }
@@ -39,6 +41,7 @@ public class MainView {
     private void initActions() {
         ArrayList<String> rootMenu = new ArrayList<String>() {{
             add("1. Users");
+            add("2. Skills");
             add("5. Exit");
         }};
         actions.put("rootMenuActions", rootMenu);
@@ -46,5 +49,9 @@ public class MainView {
 
     public void setUserView(UserView userView) {
         this.userView = userView;
+    }
+
+    public void setSkillView(SkillView skillView) {
+        this.skillView = skillView;
     }
 }
