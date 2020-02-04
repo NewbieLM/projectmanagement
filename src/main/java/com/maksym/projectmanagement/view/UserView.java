@@ -33,7 +33,8 @@ public class UserView {
                     showAllUsers();
                     break;
                 case 3:
-                    updateUser();
+                    Integer userId = readNumberFromConsole("Enter the user ID:");
+                    updateUser(userId);
                     break;
                 case 4:
                     deleteUser();
@@ -59,43 +60,54 @@ public class UserView {
         }
     }
 
-    private void updateUser() {
-        Integer userId = readNumberFromConsole("Enter the user ID:");
+    private void updateUser(Integer userId) {
+        Integer elementId = -1;
+        while (elementId != 4) {
         User user = userController.getUser(userId);
-        writeToConsole(user);
-
-        writeToConsole("1. Change name");
-        writeToConsole("2. Add skill");
-        writeToConsole("3. Delete skill");
-
-        Integer elementId = readNumberFromConsole("Please enter the number of the needed section");
-        Integer skillId = null;
-        switch (elementId) {
-            case 1:
-                user.setName(readFromConsole("Enter new name"));
-                break;
-            case 2:
-                List<Skill> skills = skillController.getAllSkills();
-                writeToConsole(skills);
-                skillId = readNumberFromConsole("To add a new skill, enter skill ID");
-
-                for (Skill skill : skills) {
-                    if (skill.getId() == skillId) {
-                        user.addSkill(skill);
-                    }
-                }
-                break;
-            case 3:
-                skillId = readNumberFromConsole("To delete skill, enter skill ID");
-                if (skillId != null) {
-                    user.deleteSkill(skillId);
-                }
-                break;
+        if (user == null) {
+            writeToConsole("NO USER WITH ID: " + userId);
+            return;
+        } else {
+            writeToConsole(user);
         }
 
-        boolean updated = userController.update(user);
-        writeToConsole(updated ? "SUCCESS" : "FAILED");
-        writeToConsole(userController.getUser(userId));
+            writeToConsole("1. Change name");
+            writeToConsole("2. Add skill");
+            writeToConsole("3. Delete skill");
+            writeToConsole("4. Back");
+
+            elementId = readNumberFromConsole("Please enter the number of the needed section");
+            Integer skillId = null;
+
+            switch (elementId) {
+                case 1:
+                    user.setName(readFromConsole("Enter new name"));
+                    break;
+                case 2:
+                    List<Skill> skills = skillController.getAllSkills();
+                    writeToConsole(skills);
+                    skillId = readNumberFromConsole("To add a new skill, enter skill ID");
+
+                    for (Skill skill : skills) {
+                        if (skill.getId() == skillId) {
+                            user.addSkill(skill);
+                        }
+                    }
+                    break;
+                case 3:
+                    skillId = readNumberFromConsole("To delete skill, enter skill ID");
+                    if (skillId != null) {
+                        user.deleteSkill(skillId);
+                    }
+                    break;
+                case 4:
+                    return;
+            }
+
+            boolean updated = userController.update(user);
+            writeToConsole(updated ? "SUCCESS" : "FAILED");
+            // writeToConsole(userController.getUser(userId));
+        }
     }
 
     private void deleteUser() {
@@ -112,6 +124,7 @@ public class UserView {
         }
     }
 
+/*
     public void showUser(Integer userId) {
         User user = userController.getUser(userId);
         if (user == null) {
@@ -120,6 +133,7 @@ public class UserView {
             writeToConsole(user);
         }
     }
+*/
 
 
     private List<String> initActions() {

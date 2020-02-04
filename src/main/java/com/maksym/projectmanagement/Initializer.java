@@ -1,10 +1,12 @@
 package com.maksym.projectmanagement;
 
 import com.maksym.projectmanagement.controller.SkillController;
+import com.maksym.projectmanagement.controller.TeamController;
 import com.maksym.projectmanagement.controller.UserController;
 import com.maksym.projectmanagement.repository.*;
 import com.maksym.projectmanagement.view.MainView;
 import com.maksym.projectmanagement.view.SkillView;
+import com.maksym.projectmanagement.view.TeamView;
 import com.maksym.projectmanagement.view.UserView;
 
 public class Initializer {
@@ -16,10 +18,12 @@ public class Initializer {
 
     private UserController userController;
     private SkillController skillController;
+    private TeamController teamController;
 
     private MainView mainView;
     private UserView userView;
     private SkillView skillView;
+    private TeamView teamView;
 
     public Initializer() {
         try {
@@ -41,10 +45,13 @@ public class Initializer {
 
         skillController = new SkillController();
         userController = new UserController();
+        teamController = new TeamController();
+
 
         mainView = new MainView();
         userView = new UserView();
         skillView = new SkillView();
+        teamView = new TeamView();
 
 
         userRepository.setSkillRepository(skillRepository);
@@ -56,13 +63,17 @@ public class Initializer {
         userController.setUserRepository(userRepository);
         userController.setSkillController(skillController);
         skillController.setSkillRepository(skillRepository);
+        teamController.setTeamRepository(teamRepository);
 
         mainView.setUserView(userView);
         mainView.setSkillView(skillView);
+        mainView.setTeamView(teamView);
         userView.setMainView(mainView);
         userView.setUserController(userController);
         userView.setSkillController(skillController);
         skillView.setSkillController(skillController);
+        teamView.setTeamController(teamController);
+        teamView.setUserController(userController);
 
     }
 

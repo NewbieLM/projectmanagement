@@ -118,7 +118,7 @@ public class TeamRepository {
         return updated > 0;
     }
 
-    public boolean addUser(Integer teamId, List<Integer> usersId) throws SQLException {
+    public boolean addUser(Integer teamId, Integer... usersId) throws SQLException {
         Connection connection = Util.getConnection();
         connection.setAutoCommit(false);
         PreparedStatement statement = connection.prepareStatement(ADD_USER_TO_TEAM);
@@ -135,9 +135,9 @@ public class TeamRepository {
         return newUsers.length > 0;
     }
 
-    public boolean deleteUser(Integer teamId, List<Integer> usersId) throws SQLException {
+    public boolean deleteUser(Integer teamId, Integer... usersId) throws SQLException {
         Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(DELETE_USER_FROM_TEAM + Util.arrayToQueryParameters(usersId.toArray()));
+        PreparedStatement statement = connection.prepareStatement(DELETE_USER_FROM_TEAM + Util.arrayToQueryParameters(usersId));
         statement.setInt(1, teamId);
         int deleted = statement.executeUpdate();
         Util.closeConnection(connection, statement);

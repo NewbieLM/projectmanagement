@@ -18,6 +18,10 @@ public class Team {
         this(id, description, new ArrayList<>());
     }
 
+    public Team(String description) {
+        this(0, description, new ArrayList<>());
+    }
+
     public Integer getId() {
         return id;
     }

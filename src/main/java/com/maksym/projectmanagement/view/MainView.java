@@ -12,6 +12,7 @@ import static com.maksym.projectmanagement.Util.writeToConsole;
 public class MainView {
     private UserView userView;
     private SkillView skillView;
+    private TeamView teamView;
     private Map<String, List<String>> actions;
 
     public MainView() {
@@ -21,17 +22,26 @@ public class MainView {
 
     public void rootMenu() {
         Integer elementId = -1;
-        while (elementId != 5) {
+        while (elementId != 6) {
             writeToConsole(actions.get("rootMenuActions"));
             elementId = readNumberFromConsole("Please enter the number of the needed section");
             switch (elementId) {
                 case 1:
-                    userView.usersMenu();
+                   // userView.usersMenu();
                     break;
                 case 2:
-                    skillView.skillsMenu();
+                    //skillView.skillsMenu();
+                    break;
+                case 3:
+                    teamView.teamMenu();
+                    break;
+                case 4:
+                    userView.usersMenu();
                     break;
                 case 5:
+                    skillView.skillsMenu();
+                    break;
+                case 6:
                     break;
             }
         }
@@ -40,9 +50,12 @@ public class MainView {
 
     private void initActions() {
         ArrayList<String> rootMenu = new ArrayList<String>() {{
-            add("1. Users");
-            add("2. Skills");
-            add("5. Exit");
+            add("1. Customers");
+            add("2. Projects");
+            add("3. Teams");
+            add("4. Users");
+            add("5. Skills");
+            add("6. Exit");
         }};
         actions.put("rootMenuActions", rootMenu);
     }
@@ -53,5 +66,9 @@ public class MainView {
 
     public void setSkillView(SkillView skillView) {
         this.skillView = skillView;
+    }
+
+    public void setTeamView(TeamView teamView) {
+        this.teamView = teamView;
     }
 }
