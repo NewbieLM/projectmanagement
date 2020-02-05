@@ -39,7 +39,7 @@ public class TeamController {
         return team;
     }
 
-    public boolean updateTeam(Team team) {
+    public boolean update(Team team) {
         boolean updated = false;
         try {
             updated = teamRepository.update(team);
@@ -69,7 +69,7 @@ public class TeamController {
         return deleted;
     }
 
-    public boolean deleteTeam(Integer teamId) {
+    public boolean delete(Integer teamId) {
         boolean deleted = false;
         try {
             deleted = teamRepository.delete(teamId);

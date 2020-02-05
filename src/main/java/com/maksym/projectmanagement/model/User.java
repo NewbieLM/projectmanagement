@@ -23,8 +23,8 @@ public class User {
     }
 
     public void deleteSkill(Integer skillId) {
-        for(Skill skill : skills){
-            if(skill.getId() == skillId){
+        for (Skill skill : skills) {
+            if (skill.getId() == skillId) {
                 skills.remove(skill);
                 break;
             }

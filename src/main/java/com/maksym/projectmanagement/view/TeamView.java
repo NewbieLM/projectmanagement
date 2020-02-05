@@ -3,9 +3,11 @@ package com.maksym.projectmanagement.view;
 import com.maksym.projectmanagement.controller.TeamController;
 import com.maksym.projectmanagement.controller.UserController;
 import com.maksym.projectmanagement.model.Team;
+import com.maksym.projectmanagement.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.maksym.projectmanagement.Util.*;
 
@@ -48,17 +50,17 @@ public class TeamView {
         String description = readFromConsole("Enter team description:").trim();
         Team team = new Team(description);
         Team savedTeam = teamController.save(team);
-        if (team == null) {
+        if (savedTeam == null) {
             writeToConsole("FAILED, TRY AGAIN");
         } else {
             writeToConsole("SUCCESS");
-            updateTeam(team.getId());
+            updateTeam(savedTeam.getId());
         }
     }
 
     private void showAllTeams() {
         List<Team> teams = teamController.getAll();
-        if (teams == null) {
+        if (teams == null || teams.isEmpty()) {
             writeToConsole("NO SAVED TEAMS");
         } else {
             writeToConsole(teams);
@@ -86,10 +88,11 @@ public class TeamView {
                 case 1:
                     String newDescription = readFromConsole("Enter new team description");
                     team.setDescription(newDescription);
-                    updated = teamController.updateTeam(team);
+                    updated = teamController.update(team);
                     break;
                 case 2:
-                    writeToConsole(userController.getAll());
+                    List<User> users = userController.getAll();
+                    writeToConsole(users.stream().filter(u -> !team.getUsers().contains(u)).collect(Collectors.toList()));
                     Integer newUserId = readNumberFromConsole("To add a new user to team, enter user ID");
                     updated = teamController.addUserToTeam(teamId, newUserId);
                     break;
@@ -107,7 +110,7 @@ public class TeamView {
 
     private void deleteTeam() {
         Integer teamId = readNumberFromConsole("Enter the team ID to delete:");
-        writeToConsole(teamController.deleteTeam(teamId) ? "SUCCESS" : "FAILED");
+        writeToConsole(teamController.delete(teamId) ? "SUCCESS" : "FAILED");
     }
 
 

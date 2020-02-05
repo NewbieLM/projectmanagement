@@ -20,6 +20,10 @@ public class Project {
         this(id, description, cost, new ArrayList<>());
     }
 
+    public Project(String description) {
+        this(0, description, 0, new ArrayList<>());
+    }
+
     public Integer getId() {
         return id;
     }
@@ -75,5 +79,18 @@ public class Project {
         return stringBuilder.toString();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Project project = (Project) o;
+
+        return id != null ? id.equals(project.id) : project.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
 }

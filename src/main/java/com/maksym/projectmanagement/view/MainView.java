@@ -13,6 +13,8 @@ public class MainView {
     private UserView userView;
     private SkillView skillView;
     private TeamView teamView;
+    private ProjectView projectView;
+    private CustomerView customerView;
     private Map<String, List<String>> actions;
 
     public MainView() {
@@ -27,10 +29,10 @@ public class MainView {
             elementId = readNumberFromConsole("Please enter the number of the needed section");
             switch (elementId) {
                 case 1:
-                   // userView.usersMenu();
+                    customerView.customerMenu();
                     break;
                 case 2:
-                    //skillView.skillsMenu();
+                    projectView.projectMenu();
                     break;
                 case 3:
                     teamView.teamMenu();
@@ -70,5 +72,13 @@ public class MainView {
 
     public void setTeamView(TeamView teamView) {
         this.teamView = teamView;
+    }
+
+    public void setProjectView(ProjectView projectView) {
+        this.projectView = projectView;
+    }
+
+    public void setCustomerView(CustomerView customerView) {
+        this.customerView = customerView;
     }
 }

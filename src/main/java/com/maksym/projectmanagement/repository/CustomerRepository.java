@@ -106,7 +106,7 @@ public class CustomerRepository {
     }
 
 
-    public boolean addProject(Integer customerId, Integer projectId, Integer customerBudget) throws SQLException {
+    public boolean addProject(Integer customerId, Integer customerBudget, Integer projectId) throws SQLException {
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(ADD_PROJECT_TO_CUSTOMER);
         statement.setInt(1, customerId);

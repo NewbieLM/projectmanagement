@@ -7,6 +7,7 @@ import com.maksym.projectmanagement.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.maksym.projectmanagement.Util.*;
 
@@ -63,13 +64,13 @@ public class UserView {
     private void updateUser(Integer userId) {
         Integer elementId = -1;
         while (elementId != 4) {
-        User user = userController.getUser(userId);
-        if (user == null) {
-            writeToConsole("NO USER WITH ID: " + userId);
-            return;
-        } else {
-            writeToConsole(user);
-        }
+            User user = userController.getUser(userId);
+            if (user == null) {
+                writeToConsole("NO USER WITH ID: " + userId);
+                return;
+            } else {
+                writeToConsole(user);
+            }
 
             writeToConsole("1. Change name");
             writeToConsole("2. Add skill");
@@ -85,7 +86,7 @@ public class UserView {
                     break;
                 case 2:
                     List<Skill> skills = skillController.getAllSkills();
-                    writeToConsole(skills);
+                    writeToConsole(skills.stream().filter(s -> !user.getSkills().contains(s)).collect(Collectors.toList()));
                     skillId = readNumberFromConsole("To add a new skill, enter skill ID");
 
                     for (Skill skill : skills) {
@@ -106,7 +107,6 @@ public class UserView {
 
             boolean updated = userController.update(user);
             writeToConsole(updated ? "SUCCESS" : "FAILED");
-            // writeToConsole(userController.getUser(userId));
         }
     }
 
@@ -117,24 +117,12 @@ public class UserView {
 
     public void showAllUsers() {
         List<User> users = userController.getAll();
-        if (users == null) {
+        if (users == null || users.isEmpty()) {
             writeToConsole("NO SAVED USERS");
         } else {
             writeToConsole(users);
         }
     }
-
-/*
-    public void showUser(Integer userId) {
-        User user = userController.getUser(userId);
-        if (user == null) {
-            writeToConsole("NO USER WITH ID: " + userId);
-        } else {
-            writeToConsole(user);
-        }
-    }
-*/
-
 
     private List<String> initActions() {
         ArrayList<String> usersMenu = new ArrayList<String>() {{

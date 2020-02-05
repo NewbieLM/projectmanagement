@@ -129,7 +129,7 @@ public class ProjectRepository {
         return updated > 0;
     }
 
-    public boolean addTeam(Integer projectId, List<Integer> teamsId) throws SQLException {
+    public boolean addTeam(Integer projectId, Integer... teamsId) throws SQLException {
         Connection connection = Util.getConnection();
         connection.setAutoCommit(false);
         PreparedStatement statement = connection.prepareStatement(ADD_TEAM_TO_PROJECT);
@@ -146,9 +146,9 @@ public class ProjectRepository {
         return newTeams.length > 0;
     }
 
-    public boolean deleteTeam(Integer projectId, List<Integer> teamsId) throws SQLException {
+    public boolean deleteTeam(Integer projectId, Integer... teamsId) throws SQLException {
         Connection connection = Util.getConnection();
-        PreparedStatement statement = connection.prepareStatement(DELETE_TEAM_FROM_PROJECT + Util.arrayToQueryParameters(teamsId.toArray()));
+        PreparedStatement statement = connection.prepareStatement(DELETE_TEAM_FROM_PROJECT + Util.arrayToQueryParameters(teamsId));
         statement.setInt(1, projectId);
         int deleted = statement.executeUpdate();
         Util.closeConnection(connection, statement);

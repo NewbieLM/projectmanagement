@@ -18,6 +18,10 @@ public class Customer {
         this(id, name, new HashMap<>());
     }
 
+    public Customer(String name) {
+        this(0, name, new HashMap<>());
+    }
+
 
     public Integer getId() {
         return id;
@@ -49,5 +53,20 @@ public class Customer {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Customer customer = (Customer) o;
+
+        return id != null ? id.equals(customer.id) : customer.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
