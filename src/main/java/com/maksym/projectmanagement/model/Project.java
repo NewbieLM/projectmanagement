@@ -62,7 +62,7 @@ public class Project {
         if (teams.size() > 0) {
             str += teamsToString();
         } else {
-            str += "========================= \n";
+            str += "=========================\n";
         }
         return str;
     }
@@ -83,9 +83,7 @@ public class Project {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Project project = (Project) o;
-
         return id != null ? id.equals(project.id) : project.id == null;
     }
 

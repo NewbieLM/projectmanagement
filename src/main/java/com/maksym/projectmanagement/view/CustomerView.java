@@ -100,7 +100,7 @@ public class CustomerView {
                     updated = customerController.addProject(customer.getId(), customerBudget, newTeamId);
                     break;
                 case 3:
-                    writeToConsole(customer.getProjects().keySet());
+                    writeToConsole(customer.getProjects().size() > 0 ? customer.projectsToString() : "NO PROJECT YET");
                     Integer projectId = readNumberFromConsole("To delete project, enter project ID");
                     updated = customerController.deleteProject(customer.getId(), projectId);
                     break;

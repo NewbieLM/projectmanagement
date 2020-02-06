@@ -15,13 +15,13 @@ public class ProjectRepository {
     private static final String GET_PROJECT_BY_ID = "SELECT * FROM company.projects WHERE id = ?";
     private static final String UPDATE_PROJECT = "UPDATE company.projects SET description = ?, cost = ? WHERE id = ?";
     private static final String DELETE_PROJECT = "DELETE FROM company.projects WHERE id = ?";
-    private static final String ADD_TEAM_TO_PROJECT = "INSERT INTO company.projectteams (projectid, teamid) VALUE (?, ?)";
-    private static final String DELETE_TEAM_FROM_PROJECT = "DELETE FROM company.projectteams WHERE projectid = ? AND teamid IN";
-    private static final String GET_PROJECT_BY_CUSTOMER_ID = "SELECT p.id, p.description, p.cost, cp.customer_budget FROM company.projects p LEFT JOIN company.customerprojects cp ON cp.projectid = p.id WHERE cp.customerid = ?";
+    private static final String ADD_TEAM_TO_PROJECT = "INSERT INTO company.project_teams (project_id, team_id) VALUE (?, ?)";
+    private static final String DELETE_TEAM_FROM_PROJECT = "DELETE FROM company.project_teams WHERE project_id = ? AND team_id IN";
+    private static final String GET_PROJECT_BY_CUSTOMER_ID = "SELECT p.id, p.description, p.cost, cp.customer_budget FROM company.projects p LEFT JOIN company.customer_projects cp ON cp.project_id = p.id WHERE cp.customer_id = ?";
+    private static final String UPDATE_PROJECT_COST = "UPDATE company.projects p SET cost = (SELECT SUM(customer_budget) FROM company.customer_projects cp WHERE cp.project_id = p.id GROUP BY cp.project_id) WHERE p.id IN";
 
 
     private TeamRepository teamRepository;
-    private CustomerRepository customerRepository;
 
     public Project save(Project project) throws SQLException {
         Connection connection = Util.getConnection();
@@ -118,6 +118,16 @@ public class ProjectRepository {
         return updated > 0;
     }
 
+    public boolean updateProjectTotalCost(Integer... projectsId) throws SQLException {
+        Connection connection = Util.getConnection();
+        PreparedStatement statement = connection.prepareStatement(UPDATE_PROJECT_COST + Util.arrayToQueryParameters(projectsId));
+        int updated = statement.executeUpdate();
+        Util.closeConnection(connection, statement);
+
+        return updated > 0;
+
+    }
+
     public boolean delete(Integer projectId) throws SQLException {
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(DELETE_PROJECT);
@@ -160,7 +170,4 @@ public class ProjectRepository {
         this.teamRepository = teamRepository;
     }
 
-    public void setCustomerRepository(CustomerRepository customerRepository) {
-        this.customerRepository = customerRepository;
-    }
 }

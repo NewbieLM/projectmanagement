@@ -49,11 +49,29 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        String str = "id=" + id + ", name='" + name + "\n";
+        if (projects.keySet().size() > 0) {
+            str += projectsToString();
+        } else {
+            str += "=========================";
+        }
+        return str;
     }
+
+    public String projectsToString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Projects:");
+        stringBuilder.append("\n");
+        for (Map.Entry<Project, Integer> entry : projects.entrySet()) {
+            stringBuilder.append("Customer contribution: ");
+            stringBuilder.append(entry.getValue());
+            stringBuilder.append("\n");
+            stringBuilder.append(entry.getKey());
+            stringBuilder.append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
 
     @Override
     public boolean equals(Object o) {

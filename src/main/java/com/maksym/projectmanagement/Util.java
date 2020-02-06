@@ -56,7 +56,7 @@ public class Util {
     }
 
 
-    public static void writeToConsole(List<? extends Object> messages) {
+    public static void writeToConsole(List<?> messages) {
         for (Object message : messages) {
             writeToConsole(message.toString());
         }

@@ -59,7 +59,6 @@ public class Initializer {
         userRepository.setSkillRepository(skillRepository);
         teamRepository.setUserRepository(userRepository);
         customerRepository.setProjectRepository(projectRepository);
-        projectRepository.setCustomerRepository(customerRepository);
         projectRepository.setTeamRepository(teamRepository);
 
         userController.setUserRepository(userRepository);
@@ -87,40 +86,4 @@ public class Initializer {
 
     }
 
-
-    public CustomerRepository getCustomerRepository() {
-        return customerRepository;
-    }
-
-    public ProjectRepository getProjectRepository() {
-        return projectRepository;
-    }
-
-    public TeamRepository getTeamRepository() {
-        return teamRepository;
-    }
-
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
-    public SkillRepository getSkillRepository() {
-        return skillRepository;
-    }
-
-    public UserController getUserController() {
-        return userController;
-    }
-
-    public SkillController getSkillController() {
-        return skillController;
-    }
-
-    public MainView getMainView() {
-        return mainView;
-    }
-
-    public UserView getUserView() {
-        return userView;
-    }
 }

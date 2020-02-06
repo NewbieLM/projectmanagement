@@ -11,11 +11,11 @@ public class TeamRepository {
     private static final String SAVE_TEAM = "INSERT INTO company.teams (description) VALUE (?)";
     private static final String GET_TEAM_BY_ID = "SELECT * FROM company.teams WHERE id = ?";
     private static final String GET_ALL_TEAMS = "SELECT * FROM company.teams";
-    private static final String GET_TEAM_BY_PROJECT_ID = "SELECT t.id, t.description FROM company.teams t LEFT JOIN company.projectteams pt ON pt.teamid = t.id WHERE pt.projectid = ?";
+    private static final String GET_TEAM_BY_PROJECT_ID = "SELECT t.id, t.description FROM company.teams t LEFT JOIN company.project_teams pt ON pt.team_id = t.id WHERE pt.project_id = ?";
     private static final String UPDATE_TEAM = "UPDATE company.teams SET description = ? WHERE id = ?";
     private static final String DELETE_TEAM = "DELETE FROM company.teams WHERE id = ?";
-    private static final String ADD_USER_TO_TEAM = "INSERT INTO company.teamusers (teamid, userid) VALUE (?, ?)";
-    private static final String DELETE_USER_FROM_TEAM = "DELETE FROM company.teamusers WHERE teamid = ? AND userid IN";
+    private static final String ADD_USER_TO_TEAM = "INSERT INTO company.team_users (team_id, user_id) VALUE (?, ?)";
+    private static final String DELETE_USER_FROM_TEAM = "DELETE FROM company.team_users WHERE team_id = ? AND user_id IN";
 
 
     private UserRepository userRepository;

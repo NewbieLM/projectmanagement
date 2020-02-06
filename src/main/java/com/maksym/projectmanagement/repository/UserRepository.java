@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class UserRepository {
     private static final String SAVE_USER = "INSERT INTO company.users (name) VALUE (?)";
-    private static final String GET_USERS_BY_TEAM_ID = "SELECT userid FROM company.teamusers WHERE teamid = ?";
+    private static final String GET_USERS_BY_TEAM_ID = "SELECT user_id FROM company.team_users WHERE team_id = ?";
     private static final String GET_USERS_BY_ID = "SELECT * FROM company.users WHERE id IN ";
     private static final String GET_ALL_USERS = "SELECT * FROM company.users";
     private static final String DELETE_USER = "DELETE FROM company.users WHERE id = ?";
@@ -80,7 +80,7 @@ public class UserRepository {
 
         Util.closeConnection(connection, statement, resultSet);
 
-        Map<Integer, List<Skill>> skills = skillRepository.getUserSkills(users.stream().map(u -> u.getId()).toArray(Integer[]::new));
+        Map<Integer, List<Skill>> skills = skillRepository.getUserSkills(users.stream().map(User::getId).toArray(Integer[]::new));
         for (User user : users) {
             List<Skill> userSkills = skills.getOrDefault(user.getId(), new ArrayList<>());
             user.setSkills(userSkills);

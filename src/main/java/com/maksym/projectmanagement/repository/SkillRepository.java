@@ -14,9 +14,9 @@ public class SkillRepository {
     private static final String GET_SKILL_BY_ID = "SELECT * FROM company.skills WHERE id = ?";
     private static final String INSERT_NEW_SKILL = "INSERT INTO company.skills (skill) VALUE (?)";
     private static final String UPDATE_SKILL = "UPDATE company.skills SET skill = ?  WHERE id = ?";
-    private static final String GET_SKILLS_BY_USERS_ID = "SELECT us.userid, us.skillid, s.skill FROM company.userskills us LEFT JOIN company.skills s ON us.skillid = s.id WHERE us.userid IN";
-    private static final String ADD_USER_SKILL = "INSERT INTO company.userskills (userid, skillid) VALUE (?, ?)";
-    private static final String DELETE_USER_SKILL = "DELETE FROM company.userskills WHERE userid = ? AND skillid = ?";
+    private static final String GET_SKILLS_BY_USERS_ID = "SELECT us.user_id, us.skill_id, s.skill FROM company.user_skills us LEFT JOIN company.skills s ON us.skill_id = s.id WHERE us.user_id IN";
+    private static final String ADD_USER_SKILL = "INSERT INTO company.user_skills (user_id, skill_id) VALUE (?, ?)";
+    private static final String DELETE_USER_SKILL = "DELETE FROM company.user_skills WHERE user_id = ? AND skill_id = ?";
 
     public Skill saveNewSkill(Skill skill) throws SQLException {
         Connection connection = Util.getConnection();

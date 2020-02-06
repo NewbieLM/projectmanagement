@@ -51,7 +51,7 @@ public class UserView {
         String name = readFromConsole("Enter user name:").trim();
         writeToConsole("Select skills from list:");
         writeToConsole(skillController.getAllSkills());
-        String skills = readFromConsole("Rewrite skills you need (without ID), dividing them by spaces");
+        String skills = readFromConsole("Rewrite skills you need (without ID), separating them by spaces");
         User user = userController.saveUser(name, skills);
         if (user == null || user.getId() == 0) {
             writeToConsole("FAILED, TRY AGAIN");
@@ -78,7 +78,7 @@ public class UserView {
             writeToConsole("4. Back");
 
             elementId = readNumberFromConsole("Please enter the number of the needed section");
-            Integer skillId = null;
+            Integer skillId;
 
             switch (elementId) {
                 case 1:
@@ -90,16 +90,14 @@ public class UserView {
                     skillId = readNumberFromConsole("To add a new skill, enter skill ID");
 
                     for (Skill skill : skills) {
-                        if (skill.getId() == skillId) {
+                        if (skill.getId().equals(skillId)) {
                             user.addSkill(skill);
                         }
                     }
                     break;
                 case 3:
                     skillId = readNumberFromConsole("To delete skill, enter skill ID");
-                    if (skillId != null) {
-                        user.deleteSkill(skillId);
-                    }
+                    user.deleteSkill(skillId);
                     break;
                 case 4:
                     return;
@@ -115,7 +113,7 @@ public class UserView {
         writeToConsole(userController.delete(userId) ? "SUCCESS" : "FAILED");
     }
 
-    public void showAllUsers() {
+    private void showAllUsers() {
         List<User> users = userController.getAll();
         if (users == null || users.isEmpty()) {
             writeToConsole("NO SAVED USERS");
