@@ -1,6 +1,9 @@
 language: java
-jdk: oraclejdk9
+jdk: oraclejdk8
 
 branches:
   only:
     - master
+
+notifications:
+  email: false
