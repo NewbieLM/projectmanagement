@@ -10,3 +10,12 @@ branches:
 
 notifications:
   email: false
+
+  before_script:
+    - mysql -e 'create database company'
+    - mysql -u root --password="pass"
+    before_script:
+    - mysql -u root -e 'CREATE DATABASE company;'
+    - mysql -u root -e "CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';"
+    - mysql -u root --password="pass"
+    - mysql -u root -e "GRANT ALL ON company.* TO 'root'@'localhost';"
