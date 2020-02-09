@@ -1,17 +1,32 @@
 package com.maksym.projectmanagement;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.sql.*;
 import java.util.List;
+import java.util.Properties;
 
 public class Util {
-    static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DATABASE_URL = "jdbc:mysql://localhost/company?serverTimezone=UTC";
+    private static String JDBC_DRIVER;
+    private static String DATABASE_URL;
 
-    private static final String USER = "root";
-    private static final String PASSWORD = "pass";
+    private static String USER;
+    private static String PASSWORD;
+
+    static {
+        try (InputStream input = new FileInputStream("src/main/resources/db/mysql.properties")) {
+
+            Properties prop = new Properties();
+            prop.load(input);
+
+            JDBC_DRIVER = prop.getProperty("database.driver");
+            DATABASE_URL = prop.getProperty("database.url");
+            USER = prop.getProperty("database.username");
+            PASSWORD = prop.getProperty("database.password");
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
 
     public static Connection getConnection() throws SQLException {
         return DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
@@ -105,5 +120,13 @@ public class Util {
         } catch (NumberFormatException e) {
             return false;
         }
+    }
+
+    public static String getJdbcDriver() {
+        return JDBC_DRIVER;
+    }
+
+    public static String getDatabaseUrl() {
+        return DATABASE_URL;
     }
 }

@@ -26,7 +26,7 @@ public class Initializer {
 
     public Initializer() {
         try {
-            Class.forName(Util.JDBC_DRIVER);
+            Class.forName(Util.getJdbcDriver());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
