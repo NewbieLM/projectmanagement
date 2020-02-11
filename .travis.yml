@@ -12,4 +12,4 @@ notifications:
   email: false
 
 before_script:
-  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('password') WHERE user='root';\nFLUSH PRIVILEGES;\n"
+  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('pass') WHERE user='root';\nFLUSH PRIVILEGES;\n"
