@@ -11,5 +11,5 @@ branches:
 notifications:
   email: false
 
-  before_script:
+  before_install:
     - mysql -u root --password="pass"
