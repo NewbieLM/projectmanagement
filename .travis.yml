@@ -12,4 +12,4 @@ notifications:
   email: false
 
 before_install:
-  - mysql -e 'CREATE DATABASE myapp_test;'
+  - mysql -e 'CREATE DATABASE company;'
