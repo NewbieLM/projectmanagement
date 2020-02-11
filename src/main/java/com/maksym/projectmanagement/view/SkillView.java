@@ -6,7 +6,7 @@ import com.maksym.projectmanagement.model.Skill;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.maksym.projectmanagement.Util.*;
+import static com.maksym.projectmanagement.util.Util.*;
 
 public class SkillView {
     private SkillController skillController;
@@ -67,13 +67,13 @@ public class SkillView {
 
 
     private List<String> initActions() {
-        ArrayList<String> usersMenu = new ArrayList<String>() {{
+        ArrayList<String> menu = new ArrayList<String>() {{
             add("1. Show all skills");
             add("2. Add skill");
             add("3. Update skill");
             add("4. Back to main menu");
         }};
-        return usersMenu;
+        return menu;
     }
 
     public void setSkillController(SkillController skillController) {

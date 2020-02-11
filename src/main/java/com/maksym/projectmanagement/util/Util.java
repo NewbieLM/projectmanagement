@@ -1,4 +1,4 @@
-package com.maksym.projectmanagement;
+package com.maksym.projectmanagement.util;
 
 import java.io.*;
 import java.sql.*;
@@ -11,6 +11,8 @@ public class Util {
 
     private static String USER;
     private static String PASSWORD;
+
+    private static volatile Connection connection;
 
     static {
         try (InputStream input = new FileInputStream("src/main/resources/db/mysql.properties")) {
@@ -29,28 +31,33 @@ public class Util {
     }
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
+        if (connection != null) {
+            return connection;
+        }
+        synchronized (Util.class) {
+            if (connection == null) {
+                connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
+            }
+            return connection;
+        }
     }
 
-    public static void closeConnection(Connection connection, Statement statement, ResultSet resultSet) throws SQLException {
+    public static void closeConnection(Statement statement, ResultSet resultSet) throws SQLException {
         try {
             if (resultSet != null) {
                 resultSet.close();
             }
-            statement.close();
-            connection.close();
+
         } finally {
             if (statement != null) {
                 statement.close();
             }
-            if (connection != null) {
-                connection.close();
-            }
+
         }
     }
 
-    public static void closeConnection(Connection connection, Statement statement) throws SQLException {
-        closeConnection(connection, statement, null);
+    public static void closeConnection(Statement statement) throws SQLException {
+        closeConnection(statement, null);
     }
 
     public static String arrayToQueryParameters(Object[] parameters) {

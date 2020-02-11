@@ -1,4 +1,4 @@
-package com.maksym.projectmanagement;
+package com.maksym.projectmanagement.util;
 
 import com.maksym.projectmanagement.controller.*;
 import com.maksym.projectmanagement.repository.*;

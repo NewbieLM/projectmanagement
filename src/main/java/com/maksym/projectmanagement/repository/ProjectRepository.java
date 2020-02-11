@@ -1,6 +1,6 @@
 package com.maksym.projectmanagement.repository;
 
-import com.maksym.projectmanagement.Util;
+import com.maksym.projectmanagement.util.Util;
 import com.maksym.projectmanagement.model.Project;
 
 import java.sql.*;
@@ -38,7 +38,7 @@ public class ProjectRepository {
             projectId = resultSet.getInt(1);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
         if (projectId != 0) {
             project.setId(projectId);
             return project;
@@ -59,7 +59,7 @@ public class ProjectRepository {
             Integer cost = resultSet.getInt(3);
             project = new Project(id, description, cost);
         }
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         if (project != null) {
             project.setTeams(teamRepository.getByProject(projectId));
@@ -81,7 +81,7 @@ public class ProjectRepository {
             projects.add(new Project(id, description, cost));
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return projects;
     }
@@ -99,7 +99,7 @@ public class ProjectRepository {
             Integer customerBudget = resultSet.getInt(4);
             projects.put(new Project(id, description, cost), customerBudget);
         }
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return projects;
     }
@@ -113,7 +113,7 @@ public class ProjectRepository {
         statement.setInt(3, project.getId());
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
     }
@@ -122,7 +122,7 @@ public class ProjectRepository {
         Connection connection = Util.getConnection();
         PreparedStatement statement = connection.prepareStatement(UPDATE_PROJECT_COST + Util.arrayToQueryParameters(projectsId));
         int updated = statement.executeUpdate();
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
 
@@ -134,7 +134,7 @@ public class ProjectRepository {
         statement.setInt(1, projectId);
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
     }
@@ -151,7 +151,7 @@ public class ProjectRepository {
         int[] newTeams = statement.executeBatch();
 
         connection.commit();
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return newTeams.length > 0;
     }
@@ -161,7 +161,7 @@ public class ProjectRepository {
         PreparedStatement statement = connection.prepareStatement(DELETE_TEAM_FROM_PROJECT + Util.arrayToQueryParameters(teamsId));
         statement.setInt(1, projectId);
         int deleted = statement.executeUpdate();
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return deleted > 0;
     }

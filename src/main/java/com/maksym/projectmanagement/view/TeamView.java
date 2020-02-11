@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.maksym.projectmanagement.Util.*;
+import static com.maksym.projectmanagement.util.Util.*;
 
 public class TeamView {
     private UserController userController;
@@ -119,14 +119,14 @@ public class TeamView {
     }
 
     private List<String> initActions() {
-        ArrayList<String> usersMenu = new ArrayList<String>() {{
+        ArrayList<String> menu = new ArrayList<String>() {{
             add("1. Add new team");
             add("2. Show all teams");
             add("3. Update team");
             add("4. Delete team");
             add("5. Back to main menu");
         }};
-        return usersMenu;
+        return menu;
     }
 
     public void setUserController(UserController userController) {

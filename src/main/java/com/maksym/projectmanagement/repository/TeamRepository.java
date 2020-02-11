@@ -1,6 +1,6 @@
 package com.maksym.projectmanagement.repository;
 
-import com.maksym.projectmanagement.Util;
+import com.maksym.projectmanagement.util.Util;
 import com.maksym.projectmanagement.model.Team;
 
 import java.sql.*;
@@ -34,7 +34,7 @@ public class TeamRepository {
             teamId = resultSet.getInt(1);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
         if (teamId != 0) {
             team.setId(teamId);
             return team;
@@ -54,7 +54,7 @@ public class TeamRepository {
             String description = resultSet.getString(2);
             team = new Team(id, description);
         }
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         if (team != null) {
             team.setUsers(userRepository.getByTeam(teamId));
@@ -74,7 +74,7 @@ public class TeamRepository {
             teams.add(new Team(id, description));
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return teams;
     }
@@ -90,7 +90,7 @@ public class TeamRepository {
             String description = resultSet.getString(2);
             teams.add(new Team(id, description));
         }
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return teams;
     }
@@ -102,7 +102,7 @@ public class TeamRepository {
         statement.setInt(2, team.getId());
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
     }
@@ -113,7 +113,7 @@ public class TeamRepository {
         statement.setInt(1, teamId);
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
     }
@@ -130,7 +130,7 @@ public class TeamRepository {
         int[] newUsers = statement.executeBatch();
 
         connection.commit();
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return newUsers.length > 0;
     }
@@ -140,7 +140,7 @@ public class TeamRepository {
         PreparedStatement statement = connection.prepareStatement(DELETE_USER_FROM_TEAM + Util.arrayToQueryParameters(usersId));
         statement.setInt(1, teamId);
         int deleted = statement.executeUpdate();
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return deleted > 0;
     }

@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.maksym.projectmanagement.Util.readNumberFromConsole;
-import static com.maksym.projectmanagement.Util.writeToConsole;
+import static com.maksym.projectmanagement.util.Util.readNumberFromConsole;
+import static com.maksym.projectmanagement.util.Util.writeToConsole;
 
 
 public class MainView {

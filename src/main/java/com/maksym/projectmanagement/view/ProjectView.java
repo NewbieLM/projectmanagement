@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.maksym.projectmanagement.Util.*;
+import static com.maksym.projectmanagement.util.Util.*;
 
 public class ProjectView {
     private ProjectController projectController;

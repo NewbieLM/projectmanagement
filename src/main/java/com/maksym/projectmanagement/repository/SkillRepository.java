@@ -1,6 +1,6 @@
 package com.maksym.projectmanagement.repository;
 
-import com.maksym.projectmanagement.Util;
+import com.maksym.projectmanagement.util.Util;
 import com.maksym.projectmanagement.model.Skill;
 
 import java.sql.*;
@@ -32,7 +32,7 @@ public class SkillRepository {
             generatedID = resultSet.getInt(1);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
         skill.setId(generatedID);
 
         return skill;
@@ -51,7 +51,7 @@ public class SkillRepository {
             skills.add(skill);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return skills;
     }
@@ -69,7 +69,7 @@ public class SkillRepository {
             skill = new Skill(id, description);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return skill;
     }
@@ -81,7 +81,7 @@ public class SkillRepository {
         statement.setInt(2, skill.getId());
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
     }
@@ -110,7 +110,7 @@ public class SkillRepository {
 
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return skills;
     }
@@ -130,7 +130,7 @@ public class SkillRepository {
 
         int[] saved = statement.executeBatch();
         connection.commit();
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         List<Skill> removalSkills = new ArrayList<>();
         for (Skill skill : storedSkills) {
@@ -160,7 +160,7 @@ public class SkillRepository {
         int[] deleted = statement.executeBatch();
         connection.commit();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return deleted.length > 0;
     }

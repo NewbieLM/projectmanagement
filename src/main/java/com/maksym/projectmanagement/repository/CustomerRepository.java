@@ -1,6 +1,6 @@
 package com.maksym.projectmanagement.repository;
 
-import com.maksym.projectmanagement.Util;
+import com.maksym.projectmanagement.util.Util;
 import com.maksym.projectmanagement.model.Customer;
 import com.maksym.projectmanagement.model.Project;
 
@@ -36,7 +36,7 @@ public class CustomerRepository {
             customerId = resultSet.getInt(1);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
         if (customerId != 0) {
             customer.setId(customerId);
             return customer;
@@ -56,7 +56,7 @@ public class CustomerRepository {
             String name = resultSet.getString(2);
             customer = new Customer(id, name);
         }
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         if (customer != null) {
             Map<Project, Integer> projects = projectRepository.getByCustomer(customerId);
@@ -78,7 +78,7 @@ public class CustomerRepository {
             customers.add(new Customer(id, name));
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
         return customers;
     }
 
@@ -89,7 +89,7 @@ public class CustomerRepository {
         statement.setInt(2, customer.getId());
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
     }
@@ -102,7 +102,7 @@ public class CustomerRepository {
         statement.setInt(1, customerId);
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         boolean costUpdated = true;
 
@@ -122,7 +122,7 @@ public class CustomerRepository {
         statement.setInt(3, customerBudget);
         int newProject = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         boolean costUpdated = projectRepository.updateProjectTotalCost(projectId);
 
@@ -137,7 +137,7 @@ public class CustomerRepository {
         statement.setInt(2, projectId);
         int deleted = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
         boolean costUpdated = projectRepository.updateProjectTotalCost(projectId);
 
         return deleted > 0 && costUpdated;

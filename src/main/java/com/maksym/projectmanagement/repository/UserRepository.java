@@ -1,6 +1,6 @@
 package com.maksym.projectmanagement.repository;
 
-import com.maksym.projectmanagement.Util;
+import com.maksym.projectmanagement.util.Util;
 import com.maksym.projectmanagement.model.Skill;
 import com.maksym.projectmanagement.model.User;
 
@@ -33,7 +33,7 @@ public class UserRepository {
             userId = resultSet.getInt(1);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         if (userId != 0) {
             user.setId(userId);
@@ -60,7 +60,7 @@ public class UserRepository {
             users.add(new User(id, name, userSkills));
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return users;
     }
@@ -78,7 +78,7 @@ public class UserRepository {
             users.add(new User(id, name, null));
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         Map<Integer, List<Skill>> skills = skillRepository.getUserSkills(users.stream().map(User::getId).toArray(Integer[]::new));
         for (User user : users) {
@@ -103,7 +103,7 @@ public class UserRepository {
             teammates[i] = resultSet.getInt(1);
         }
 
-        Util.closeConnection(connection, statement, resultSet);
+        Util.closeConnection(statement, resultSet);
 
         return teammates.length == 0 ? new ArrayList<>() : get(teammates);
     }
@@ -116,7 +116,7 @@ public class UserRepository {
 
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         boolean skillsUpdated = skillRepository.updateUserSkills(user.getSkills(), user.getId());
 
@@ -129,7 +129,7 @@ public class UserRepository {
         statement.setInt(1, userId);
         int updated = statement.executeUpdate();
 
-        Util.closeConnection(connection, statement);
+        Util.closeConnection(statement);
 
         return updated > 0;
     }
