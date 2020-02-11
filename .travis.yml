@@ -10,3 +10,6 @@ branches:
 
 notifications:
   email: false
+
+before_install:
+  - mysql -e 'CREATE DATABASE myapp_test;'
