@@ -12,5 +12,4 @@ notifications:
   email: false
 
   before_script:
-    - mysql -e 'create database company'
     - mysql -u root --password="pass"
