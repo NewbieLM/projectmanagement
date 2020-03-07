@@ -1,10 +1,23 @@
 package com.maksym.projectmanagement.model;
 
+
+import javax.persistence.*;
 import java.util.Objects;
 
+@Entity
+@Table(name = "skills")
 public class Skill {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "skill", nullable = false)
     private String description;
+
+    public Skill() {
+    }
 
     public Skill(Integer id, String description) {
         this.id = id;

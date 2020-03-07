@@ -1,12 +1,38 @@
 package com.maksym.projectmanagement.model;
 
+import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "users")
 public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
     private Integer id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_skills",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "skill_id")
+    )
+    @Fetch(FetchMode.SUBSELECT)
+    //@BatchSize(size = 100)
     private List<Skill> skills;
+
+
+    public User() {
+    }
 
     public User(Integer id, String name, List<Skill> skills) {
         this.id = id;

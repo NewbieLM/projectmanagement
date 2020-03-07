@@ -1,5 +1,8 @@
 package com.maksym.projectmanagement.util;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
+
 import java.io.*;
 import java.sql.*;
 import java.util.List;
@@ -13,6 +16,8 @@ public class Util {
     private static String PASSWORD;
 
     private static volatile Connection connection;
+
+    private static volatile SessionFactory sessionFactory;
 
     static {
         try (InputStream input = new FileInputStream("src/main/resources/db/mysql.properties")) {
@@ -39,6 +44,18 @@ public class Util {
                 connection = DriverManager.getConnection(DATABASE_URL, USER, PASSWORD);
             }
             return connection;
+        }
+    }
+
+    public static SessionFactory getSessionFactory() {
+        if (sessionFactory != null) {
+            return sessionFactory;
+        }
+        synchronized (Util.class) {
+            if (sessionFactory == null) {
+                sessionFactory = new Configuration().configure("db/hibernate.cfg.xml").buildSessionFactory();
+            }
+            return sessionFactory;
         }
     }
 
