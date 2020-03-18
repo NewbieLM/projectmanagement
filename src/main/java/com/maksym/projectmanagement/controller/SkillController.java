@@ -1,56 +1,34 @@
 package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Skill;
-import com.maksym.projectmanagement.repository.SkillRepository;
+import com.maksym.projectmanagement.repository.HibernateSkillRepository;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class SkillController {
-    private SkillRepository skillRepository;
+    private HibernateSkillRepository skillRepository;
 
 
-    public void setSkillRepository(SkillRepository skillRepository) {
+    public void setSkillRepository(HibernateSkillRepository skillRepository) {
         this.skillRepository = skillRepository;
     }
 
     public List<Skill> getAllSkills() {
-        List<Skill> result = null;
-        try {
-            result = skillRepository.getAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return skillRepository.getAll();
     }
 
     public Skill addNewSkill(String description) {
         Skill skill = new Skill(description);
-        try {
-            skill = skillRepository.saveNewSkill(skill);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        skill = skillRepository.saveNewSkill(skill);
         return skill;
     }
 
     public Skill getSkill(Integer skillId) {
-        Skill skill = null;
-        try {
-            skill = skillRepository.get(skillId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        Skill skill = skillRepository.get(skillId);
         return skill;
     }
 
-    public boolean updateSkill(Skill skill) {
-        boolean updated = false;
-        try {
-            updated = skillRepository.updateSkill(skill);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return updated;
+    public void updateSkill(Skill skill) {
+        skillRepository.updateSkill(skill);
     }
 }

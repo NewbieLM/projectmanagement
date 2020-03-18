@@ -1,86 +1,34 @@
 package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Team;
-import com.maksym.projectmanagement.repository.TeamRepository;
+import com.maksym.projectmanagement.repository.HibernateTeamRepository;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class TeamController {
-    private TeamRepository teamRepository;
+    private HibernateTeamRepository teamRepository;
 
     public List<Team> getAll() {
-        List<Team> teams = null;
-        try {
-            teams = teamRepository.getAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return teams;
+        return teamRepository.getAll();
     }
 
     public Team getTeam(Integer teamId) {
-        Team team = null;
-        try {
-            team = teamRepository.get(teamId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return team;
+        return teamRepository.get(teamId);
     }
 
     public Team save(Team team) {
-        try {
-            team = teamRepository.save(team);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return team;
+        return teamRepository.save(team);
     }
 
-    public boolean update(Team team) {
-        boolean updated = false;
-        try {
-            updated = teamRepository.update(team);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return updated;
-    }
-
-    public boolean addUserToTeam(Integer teamId, Integer... userId) {
-        boolean saved = false;
-        try {
-            saved = teamRepository.addUser(teamId, userId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return saved;
-    }
-
-    public boolean deleteUserFromTeam(Integer teamId, Integer... userId) {
-        boolean deleted = false;
-        try {
-            deleted = teamRepository.deleteUser(teamId, userId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return deleted;
+    public void update(Team team) {
+        teamRepository.update(team);
     }
 
     public boolean delete(Integer teamId) {
-        boolean deleted = false;
-        try {
-            deleted = teamRepository.delete(teamId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return deleted;
+        return teamRepository.delete(teamId);
     }
 
-    public void setTeamRepository(TeamRepository teamRepository) {
+    public void setTeamRepository(HibernateTeamRepository teamRepository) {
         this.teamRepository = teamRepository;
     }
 }

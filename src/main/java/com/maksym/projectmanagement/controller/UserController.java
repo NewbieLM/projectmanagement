@@ -2,14 +2,13 @@ package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Skill;
 import com.maksym.projectmanagement.model.User;
-import com.maksym.projectmanagement.repository.UserRepository;
+import com.maksym.projectmanagement.repository.HibernateUserRepository;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserController {
-    private UserRepository userRepository;
+    private HibernateUserRepository userRepository;
     private SkillController skillController;
 
     public User saveUser(String name, String userSkills) {
@@ -23,59 +22,29 @@ public class UserController {
                 }
             }
         }
-        User user = new User(0, name, skills);
-        try {
-            user = userRepository.save(user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
+        User user = new User(name, skills);
+        user = userRepository.save(user);
         return user;
     }
 
-    public boolean update(User user) {
-        boolean result = false;
-        try {
-            result = userRepository.update(user);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
+    public void update(User user) {
+        userRepository.update(user);
     }
 
     public List<User> getAll() {
-        List<User> users = null;
-        try {
-            users = userRepository.getAll();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return users;
+        return userRepository.getAll();
     }
 
     public User getUser(Integer userId) {
-        User user = null;
-        try {
-            user = userRepository.get(userId).get(0);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return user;
+        return userRepository.get(userId);
     }
 
     public boolean delete(Integer userId) {
-        boolean result = false;
-        try {
-            result = userRepository.delete(userId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return result;
+        return userRepository.delete(userId);
     }
 
 
-    public void setUserRepository(UserRepository userRepository) {
+    public void setUserRepository(HibernateUserRepository userRepository) {
         this.userRepository = userRepository;
     }
 

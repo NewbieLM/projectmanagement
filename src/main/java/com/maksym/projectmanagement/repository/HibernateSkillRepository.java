@@ -1,4 +1,4 @@
-package com.maksym.projectmanagement.repository.hibernate;
+package com.maksym.projectmanagement.repository;
 
 import com.maksym.projectmanagement.model.Skill;
 import org.hibernate.Session;
@@ -18,7 +18,7 @@ public class HibernateSkillRepository {
     }
 
     public Skill get(Integer skillId) {
-        Skill skill = null;
+        Skill skill;
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
         skill = session.get(Skill.class, skillId);
@@ -34,11 +34,10 @@ public class HibernateSkillRepository {
         return skill;
     }
 
-    public boolean updateSkill(Skill skill) {
+    public void updateSkill(Skill skill) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.merge(skill);
         session.getTransaction().commit();
-        return false;
     }
 }

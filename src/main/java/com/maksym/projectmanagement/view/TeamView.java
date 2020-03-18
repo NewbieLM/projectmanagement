@@ -42,7 +42,6 @@ public class TeamView {
                 case 5:
                     break;
             }
-
         }
     }
 
@@ -83,28 +82,35 @@ public class TeamView {
             writeToConsole("3. Delete user");
             writeToConsole("4. Back");
             elementId = readNumberFromConsole("Please enter the number of the needed section");
-            boolean updated = false;
             switch (elementId) {
                 case 1:
                     String newDescription = readFromConsole("Enter new team description");
                     team.setDescription(newDescription);
-                    updated = teamController.update(team);
+                    teamController.update(team);
                     break;
                 case 2:
                     List<User> users = userController.getAll();
-                    writeToConsole(users.stream().filter(u -> !team.getUsers().contains(u)).collect(Collectors.toList()));
+                    users = users.stream().filter(u -> !team.getUsers().contains(u)).collect(Collectors.toList());
+                    writeToConsole(users);
                     Integer newUserId = readNumberFromConsole("To add a new user to team, enter user ID");
-                    updated = teamController.addUserToTeam(teamId, newUserId);
+                    User user = users.stream().filter(u -> u.getId().equals(newUserId)).findFirst().orElse(null);
+                    if (user != null) {
+                        team.addUser(user);
+                        teamController.update(team);
+                    }
                     break;
                 case 3:
                     writeToConsole(team.getUsers());
                     Integer userId = readNumberFromConsole("To delete user from team, enter user ID");
-                    updated = teamController.deleteUserFromTeam(teamId, userId);
+                    user = team.getUsers().stream().filter(u -> u.getId().equals(userId)).findFirst().orElse(null);
+                    if (user != null) {
+                        team.removeUser(user);
+                        teamController.update(team);
+                    }
                     break;
                 case 4:
                     return;
             }
-            writeToConsole(updated ? "SUCCESS" : "FAILED");
         }
     }
 

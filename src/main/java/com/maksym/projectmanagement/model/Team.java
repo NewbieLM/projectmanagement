@@ -1,5 +1,6 @@
 package com.maksym.projectmanagement.model;
 
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -8,18 +9,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "team")
+@Table(name = "teams")
 public class Team {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(name = "id", unique = true)
     private Integer id;
 
     @Column(name = "description", nullable = false)
     private String description;
 
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "team_users",
             joinColumns = @JoinColumn(name = "team_id"),
@@ -27,6 +28,9 @@ public class Team {
     )
     @Fetch(FetchMode.SUBSELECT)
     private List<User> users;
+
+    public Team() {
+    }
 
     public Team(Integer id, String description, List<User> users) {
         this.id = id;
@@ -39,7 +43,7 @@ public class Team {
     }
 
     public Team(String description) {
-        this(0, description, new ArrayList<>());
+        this(null, description, new ArrayList<>());
     }
 
     public Integer getId() {
@@ -66,10 +70,18 @@ public class Team {
         this.users = users;
     }
 
+    public boolean addUser(User user) {
+        return users.add(user);
+    }
+
+    public boolean removeUser(User user) {
+        return users.remove(user);
+    }
+
     @Override
     public String toString() {
         String str = "id=" + id + ", description=" + description + "\n";
-        if (users.size() > 0) {
+        if (Hibernate.isInitialized(users) && users.size() > 0) {
             str += usersToString();
         }
         str += "=========================";

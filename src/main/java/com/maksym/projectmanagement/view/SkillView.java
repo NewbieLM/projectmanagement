@@ -41,7 +41,7 @@ public class SkillView {
     private void addNewSkill() {
         String description = readFromConsole("To add a new skill, enter a description of this skill");
         Skill skill = skillController.addNewSkill(description);
-        writeToConsole(skill.getId() > 0 ? "SUCCESS" : "FAILED");
+        writeToConsole(skill.getId() != null || skill.getId() > 0 ? "SUCCESS" : "FAILED");
         writeToConsole(skill);
     }
 
@@ -53,15 +53,14 @@ public class SkillView {
         Integer skillId = readNumberFromConsole("Enter the skill ID:");
         Skill skill = skillController.getSkill(skillId);
         if (skill == null) {
-            writeToConsole("No skill with such id:" + skillId + " .Try again.");
+            writeToConsole("No skill with such id:" + skillId + ". Try again.");
             return;
         }
 
         writeToConsole(skill);
         String newDescription = readFromConsole("Enter new description");
         skill.setDescription(newDescription);
-        boolean updated = skillController.updateSkill(skill);
-        writeToConsole(updated ? "SUCCESS" : "FAILED");
+        skillController.updateSkill(skill);
         writeToConsole(skill);
     }
 

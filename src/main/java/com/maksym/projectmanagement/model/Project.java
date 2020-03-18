@@ -1,13 +1,39 @@
 package com.maksym.projectmanagement.model;
 
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
+@Table(name = "projects")
 public class Project {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true)
     private Integer id;
+
+    @Column(name = "description", nullable = false)
     private String description;
+
+    @Column(name = "cost")
     private Integer cost;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "project_teams",
+            joinColumns = @JoinColumn(name = "project_id"),
+            inverseJoinColumns = @JoinColumn(name = "team_id"))
+    @Fetch(FetchMode.SUBSELECT)
     private List<Team> teams;
+
+
+    public Project() {
+    }
 
     public Project(Integer id, String description, Integer cost, List<Team> teams) {
         this.id = id;
@@ -21,7 +47,7 @@ public class Project {
     }
 
     public Project(String description) {
-        this(0, description, 0, new ArrayList<>());
+        this(null, description, 0, new ArrayList<>());
     }
 
     public Integer getId() {
@@ -56,10 +82,18 @@ public class Project {
         this.teams = teams;
     }
 
+    public boolean addTeam(Team team) {
+        return teams.add(team);
+    }
+
+    public boolean removeTeam(Team team) {
+        return teams.remove(team);
+    }
+
     @Override
     public String toString() {
         String str = "id=" + id + ", description='" + description + '\'' + ", cost=" + cost + "\n";
-        if (teams.size() > 0) {
+        if (Hibernate.isInitialized(teams) && teams.size() > 0) {
             str += teamsToString();
         } else {
             str += "=========================\n";

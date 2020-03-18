@@ -5,11 +5,11 @@ import com.maksym.projectmanagement.repository.*;
 import com.maksym.projectmanagement.view.*;
 
 public class Initializer {
-    private CustomerRepository customerRepository;
-    private ProjectRepository projectRepository;
-    private TeamRepository teamRepository;
-    private UserRepository userRepository;
-    private SkillRepository skillRepository;
+    private HibernateCustomerRepository hibernateCustomerRepository;
+    private HibernateProjectRepository hibernateProjectRepository;
+    private HibernateTeamRepository hibernateTeamRepository;
+    private HibernateUserRepository hibernateUserRepository;
+    private HibernateSkillRepository hibernateSkillRepository;
 
     private UserController userController;
     private SkillController skillController;
@@ -36,18 +36,17 @@ public class Initializer {
     }
 
     private void initLayers() {
-        skillRepository = new SkillRepository();
-        userRepository = new UserRepository();
-        teamRepository = new TeamRepository();
-        customerRepository = new CustomerRepository();
-        projectRepository = new ProjectRepository();
+        hibernateSkillRepository = new HibernateSkillRepository();
+        hibernateUserRepository = new HibernateUserRepository();
+        hibernateTeamRepository = new HibernateTeamRepository();
+        hibernateProjectRepository = new HibernateProjectRepository();
+        hibernateCustomerRepository = new HibernateCustomerRepository();
 
         skillController = new SkillController();
         userController = new UserController();
         teamController = new TeamController();
         projectController = new ProjectController();
         customerController = new CustomerController();
-
 
         mainView = new MainView();
         userView = new UserView();
@@ -56,17 +55,12 @@ public class Initializer {
         projectView = new ProjectView();
         customerView = new CustomerView();
 
-        userRepository.setSkillRepository(skillRepository);
-        teamRepository.setUserRepository(userRepository);
-        customerRepository.setProjectRepository(projectRepository);
-        projectRepository.setTeamRepository(teamRepository);
-
-        userController.setUserRepository(userRepository);
+        userController.setUserRepository(hibernateUserRepository);
         userController.setSkillController(skillController);
-        skillController.setSkillRepository(skillRepository);
-        teamController.setTeamRepository(teamRepository);
-        projectController.setProjectRepository(projectRepository);
-        customerController.setCustomerRepository(customerRepository);
+        skillController.setSkillRepository(hibernateSkillRepository);
+        teamController.setTeamRepository(hibernateTeamRepository);
+        projectController.setProjectRepository(hibernateProjectRepository);
+        customerController.setCustomerRepository(hibernateCustomerRepository);
 
         mainView.setUserView(userView);
         mainView.setSkillView(skillView);

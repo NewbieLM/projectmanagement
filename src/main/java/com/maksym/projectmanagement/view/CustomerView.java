@@ -85,29 +85,42 @@ public class CustomerView {
             writeToConsole("3. Delete project");
             writeToConsole("4. Back");
             elementId = readNumberFromConsole("Please enter the number of the needed section");
-            boolean updated = false;
+
             switch (elementId) {
                 case 1:
                     String newName = readFromConsole("Enter customer new name");
                     customer.setName(newName);
-                    updated = customerController.update(customer);
+                    customerController.update(customer);
                     break;
                 case 2:
                     List<Project> projects = projectController.getAll();
                     writeToConsole(projects.stream().filter(t -> !customer.getProjects().keySet().contains(t)).collect(Collectors.toList()));
-                    Integer newTeamId = readNumberFromConsole("To add a new protect to customer, enter project ID");
+                    Integer newProjectId = readNumberFromConsole("To add a new protect to customer, enter project ID");
                     Integer customerBudget = readNumberFromConsole("Enter customer budget size");
-                    updated = customerController.addProject(customer.getId(), customerBudget, newTeamId);
+                    Project project = projects.stream().filter(p -> p.getId().equals(newProjectId)).findFirst().orElse(null);
+                    if (project != null) {
+                        project.setCost(project.getCost() + customerBudget);
+                        projectController.update(project);
+                        customer.addProject(project, customerBudget);
+                        customerController.update(customer);
+                    }
                     break;
                 case 3:
                     writeToConsole(customer.getProjects().size() > 0 ? customer.projectsToString() : "NO PROJECT YET");
                     Integer projectId = readNumberFromConsole("To delete project, enter project ID");
-                    updated = customerController.deleteProject(customer.getId(), projectId);
+                    project = customer.getProjects().keySet().stream().filter(p -> p.getId().equals(projectId)).findFirst().orElse(null);
+                    if (project != null) {
+                        customerBudget = customer.getProjects().get(project);
+                        customer.removeProject(project);
+                        project.setCost(project.getCost() - customerBudget);
+                        customerController.update(customer);
+                        projectController.update(project);
+                    }
                     break;
                 case 4:
                     return;
             }
-            writeToConsole(updated ? "SUCCESS" : "FAILED");
+
         }
 
     }

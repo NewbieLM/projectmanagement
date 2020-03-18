@@ -1,12 +1,31 @@
 package com.maksym.projectmanagement.model;
 
+import org.hibernate.Hibernate;
+
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@Entity
+@Table(name = "customers")
 public class Customer {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", unique = true)
     private Integer id;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(name = "customer_projects",
+            joinColumns = @JoinColumn(name = "customer_id"))
+    @MapKeyJoinColumn(name = "project_id")
+    @Column(name = "customer_budget")
     private Map<Project, Integer> projects;
+
+    public Customer() {
+    }
 
     public Customer(Integer id, String name, Map<Project, Integer> projects) {
         this.id = id;
@@ -19,9 +38,8 @@ public class Customer {
     }
 
     public Customer(String name) {
-        this(0, name, new HashMap<>());
+        this(null, name, new HashMap<>());
     }
-
 
     public Integer getId() {
         return id;
@@ -47,13 +65,21 @@ public class Customer {
         this.projects = projects;
     }
 
+    public void addProject(Project project, Integer customerBudget) {
+        projects.put(project, customerBudget);
+    }
+
+    public void removeProject(Project project) {
+        projects.remove(project);
+    }
+
     @Override
     public String toString() {
         String str = "id=" + id + ", name='" + name + "\n";
-        if (projects.keySet().size() > 0) {
+        if (Hibernate.isInitialized(projects) && projects.keySet().size() > 0) {
             str += projectsToString();
         } else {
-            str += "=========================";
+            str += "=========================\n";
         }
         return str;
     }

@@ -53,7 +53,7 @@ public class UserView {
         writeToConsole(skillController.getAllSkills());
         String skills = readFromConsole("Rewrite skills you need (without ID), separating them by spaces");
         User user = userController.saveUser(name, skills);
-        if (user == null || user.getId() == 0) {
+        if (user == null || user.getId() == null) {
             writeToConsole("FAILED, TRY AGAIN");
         } else {
             writeToConsole("SUCCESS");
@@ -103,8 +103,7 @@ public class UserView {
                     return;
             }
 
-            boolean updated = userController.update(user);
-            writeToConsole(updated ? "SUCCESS" : "FAILED");
+            userController.update(user);
         }
     }
 

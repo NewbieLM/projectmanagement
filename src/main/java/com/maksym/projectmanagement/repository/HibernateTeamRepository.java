@@ -1,53 +1,55 @@
-package com.maksym.projectmanagement.repository.hibernate;
+package com.maksym.projectmanagement.repository;
 
-import com.maksym.projectmanagement.model.User;
+import com.maksym.projectmanagement.model.Team;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
+import javax.persistence.Query;
 import java.util.List;
 
 import static com.maksym.projectmanagement.util.Util.getSessionFactory;
 
-public class HibernateUserRepository {
+public class HibernateTeamRepository {
 
-    public List<User> getAll() {
+    public List<Team> getAll() {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<User> users = session.createQuery("FROM User").list();
+        List<Team> teams = session.createQuery("FROM Team").list();
         session.getTransaction().commit();
-        return users;
+        return teams;
     }
 
-    public User get(Integer usersId) {
+    public Team get(Integer teamId) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        User user = session.get(User.class, usersId);
+        Team team = session.get(Team.class, teamId);
+        Hibernate.initialize(team.getUsers());
         session.getTransaction().commit();
-        return user;
+        return team;
     }
 
-    public User save(User user) {
+    public Team save(Team team) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.merge(user);
+        session.persist(team);
         session.getTransaction().commit();
-        return user;
+        return team;
     }
 
-    ///BOOLEAN
-    public void update(User user) {
+    public void update(Team team) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        session.merge(user);
+        session.merge(team);
         session.getTransaction().commit();
     }
 
-    ///BOOLEAN
-    public void delete(Integer userId) {
+    public boolean delete(Integer teamId) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        User user = new User("deleted_user");
-        user.setId(userId);
-        session.delete(user);
+        Query query = session.createQuery("DELETE FROM Team t WHERE t.id=:id");
+        boolean deleted = query.setParameter("id", teamId).executeUpdate() != 0;
         session.getTransaction().commit();
+        return deleted;
     }
+
 }

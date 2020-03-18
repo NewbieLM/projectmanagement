@@ -1,0 +1,150 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="Maksym" id="1584571604935-1">
+        <createTable tableName="customer_projects">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="customer_id" type="INT"/>
+            <column name="project_id" type="INT"/>
+            <column name="customer_budget" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-2">
+        <createTable tableName="customers">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-3">
+        <createTable tableName="project_teams">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="project_id" type="INT"/>
+            <column name="team_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-4">
+        <createTable tableName="projects">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="cost" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-5">
+        <createTable tableName="skills">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="skill" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-6">
+        <createTable tableName="team_users">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="team_id" type="INT"/>
+            <column name="user_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-7">
+        <createTable tableName="teams">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-8">
+        <createTable tableName="user_skills">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="INT"/>
+            <column name="skill_id" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-9">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+	
+    <changeSet author="Maksym" id="1584571604935-10">
+        <addUniqueConstraint columnNames="customer_id, project_id" constraintName="unique_projects_per_customer" tableName="customer_projects"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-11">
+        <addUniqueConstraint columnNames="user_id, skill_id" constraintName="unique_skills_per_user" tableName="user_skills"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-12">
+        <addUniqueConstraint columnNames="project_id, team_id" constraintName="unique_teams_per_project" tableName="project_teams"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-13">
+        <addUniqueConstraint columnNames="team_id, user_id" constraintName="unique_users_per_team" tableName="team_users"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-14">
+        <createIndex indexName="project_id" tableName="customer_projects">
+            <column name="project_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-15">
+        <createIndex indexName="skill_id" tableName="user_skills">
+            <column name="skill_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-16">
+        <createIndex indexName="team_id" tableName="project_teams">
+            <column name="team_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-17">
+        <createIndex indexName="user_id" tableName="team_users">
+            <column name="user_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-18">
+        <addForeignKeyConstraint baseColumnNames="customer_id" baseTableName="customer_projects" constraintName="customer_projects_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="customers" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-19">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="customer_projects" constraintName="customer_projects_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="projects" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-20">
+        <addForeignKeyConstraint baseColumnNames="project_id" baseTableName="project_teams" constraintName="project_teams_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="projects" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-21">
+        <addForeignKeyConstraint baseColumnNames="team_id" baseTableName="project_teams" constraintName="project_teams_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-22">
+        <addForeignKeyConstraint baseColumnNames="team_id" baseTableName="team_users" constraintName="team_users_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="teams" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-23">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="team_users" constraintName="team_users_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-24">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="user_skills" constraintName="user_skills_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksym" id="1584571604935-25">
+        <addForeignKeyConstraint baseColumnNames="skill_id" baseTableName="user_skills" constraintName="user_skills_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="skills" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

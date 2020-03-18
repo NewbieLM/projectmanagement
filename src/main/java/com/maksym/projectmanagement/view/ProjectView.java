@@ -50,7 +50,7 @@ public class ProjectView {
         String description = readFromConsole("Enter project description:").trim();
         Project project = new Project(description);
         project = projectController.save(project);
-        if (project == null) {
+        if (project.getId() == null) {
             writeToConsole("FAILED, TRY AGAIN");
         } else {
             writeToConsole("SUCCESS");
@@ -84,28 +84,34 @@ public class ProjectView {
             writeToConsole("3. Delete team");
             writeToConsole("4. Back");
             elementId = readNumberFromConsole("Please enter the number of the needed section");
-            boolean updated = false;
             switch (elementId) {
                 case 1:
                     String newDescription = readFromConsole("Enter new project description");
                     project.setDescription(newDescription);
-                    updated = projectController.update(project);
+                    projectController.update(project);
                     break;
                 case 2:
                     List<Team> teams = teamController.getAll();
                     writeToConsole(teams.stream().filter(t -> !project.getTeams().contains(t)).collect(Collectors.toList()));
                     Integer newTeamId = readNumberFromConsole("To add a new team to project, enter team ID");
-                    updated = projectController.addTeam(projectId, newTeamId);
+                    Team team = teams.stream().filter(t -> t.getId().equals(newTeamId)).findFirst().orElse(null);
+                    if (team != null) {
+                        project.addTeam(team);
+                        projectController.update(project);
+                    }
                     break;
                 case 3:
                     writeToConsole(project.getTeams());
                     Integer teamId = readNumberFromConsole("To delete team from project, enter team ID");
-                    updated = projectController.deleteTeam(projectId, teamId);
+                    team = project.getTeams().stream().filter(t -> t.getId().equals(teamId)).findFirst().orElse(null);
+                    if (team != null) {
+                        project.removeTeam(team);
+                        projectController.update(project);
+                    }
                     break;
                 case 4:
                     return;
             }
-            writeToConsole(updated ? "SUCCESS" : "FAILED");
         }
     }
 

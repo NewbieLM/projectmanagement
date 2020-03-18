@@ -1,6 +1,5 @@
 package com.maksym.projectmanagement.model;
 
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
@@ -20,14 +19,15 @@ public class User {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.EAGER)
+
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_skills",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
     @Fetch(FetchMode.SUBSELECT)
-    //@BatchSize(size = 100)
+    // @BatchSize(size = 100)
     private List<Skill> skills;
 
 
@@ -40,8 +40,12 @@ public class User {
         this.skills = skills;
     }
 
+    public User(String name, List<Skill> skills) {
+        this(null, name, skills);
+    }
+
     public User(String name) {
-        this(0, name, new ArrayList<>());
+        this(null, name, new ArrayList<>());
     }
 
     public void addSkill(Skill skill) {
@@ -50,7 +54,7 @@ public class User {
 
     public void deleteSkill(Integer skillId) {
         for (Skill skill : skills) {
-            if (skill.getId() == skillId) {
+            if (skill.getId().equals(skillId)) {
                 skills.remove(skill);
                 break;
             }
