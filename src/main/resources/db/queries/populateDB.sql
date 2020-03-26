@@ -34,7 +34,7 @@ VALUES ('Ashely'),
        ('Eagan');
 
 	
-INSERT INTO company.skills (skill)
+INSERT INTO company.skills (name)
 VALUES ('JAVA'),
        ('C++'),
 	     ('SQL'),
@@ -56,7 +56,7 @@ VALUES (1, 1), (1, 3), (1, 4),
        (10, 2), (10, 3);
        
        
-INSERT INTO company.teams (description)
+INSERT INTO company.teams (name)
 VALUES ('Team #1'),
        ('Team #2'),
        ('Team #3'),
@@ -81,7 +81,7 @@ VALUES (1, 2), (1, 3), (1, 5),
        (10, 10), (10, 8), (10, 9);
        
        
-INSERT INTO company.projects (description)
+INSERT INTO company.projects (name)
 VALUES ('Project #1'),
        ('Project #2'),
        ('Project #3'),

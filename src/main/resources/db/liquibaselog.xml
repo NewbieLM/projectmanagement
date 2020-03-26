@@ -34,7 +34,7 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="description" type="VARCHAR(30)">
+            <column name="name" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
             <column defaultValueNumeric="0" name="cost" type="INT">
@@ -47,7 +47,7 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="skill" type="VARCHAR(30)">
+            <column name="name" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
         </createTable>
@@ -66,7 +66,7 @@
             <column autoIncrement="true" name="id" type="INT">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
-            <column name="description" type="VARCHAR(30)">
+            <column name="name" type="VARCHAR(30)">
                 <constraints nullable="false"/>
             </column>
         </createTable>

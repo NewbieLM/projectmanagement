@@ -1,64 +1,27 @@
 package com.maksym.projectmanagement.model;
 
 
-import javax.persistence.*;
-import java.util.Objects;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "skills")
-public class Skill {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Integer id;
-
-    @Column(name = "skill", nullable = false)
-    private String description;
+public class Skill extends AbstractNamedEntity {
 
     public Skill() {
     }
 
-    public Skill(Integer id, String description) {
-        this.id = id;
-        this.description = description;
+    public Skill(Integer id, String name) {
+        super(id, name);
     }
 
-    public Skill(String description) {
-        this(null, description);
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public Skill(String name) {
+        this(null, name);
     }
 
     @Override
     public String toString() {
-        return "[id " + id + "]" + description;
+        return "[id " + super.getId() + "]" + super.getName();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Skill skill = (Skill) o;
-        return Objects.equals(id, skill.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

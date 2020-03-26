@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.maksym.projectmanagement.util.Util.*;
+import static com.maksym.projectmanagement.util.IOUtil.*;
 
 public class TeamView {
     private UserController userController;
@@ -84,8 +84,8 @@ public class TeamView {
             elementId = readNumberFromConsole("Please enter the number of the needed section");
             switch (elementId) {
                 case 1:
-                    String newDescription = readFromConsole("Enter new team description");
-                    team.setDescription(newDescription);
+                    String newName = readFromConsole("Enter new team description");
+                    team.setName(newName);
                     teamController.update(team);
                     break;
                 case 2:

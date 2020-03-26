@@ -11,17 +11,17 @@ CREATE TABLE company.users (
 
 	CREATE TABLE company.skills (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    skill VARCHAR(30) NOT NULL
+    name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE company.teams (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    description VARCHAR(30) NOT NULL
+    name VARCHAR(30) NOT NULL
 );
 
 CREATE TABLE company.projects (
     id INT PRIMARY KEY AUTO_INCREMENT,
-    description VARCHAR(30) NOT NULL,
+    name VARCHAR(30) NOT NULL,
     cost INT NOT NULL DEFAULT 0
 );
 

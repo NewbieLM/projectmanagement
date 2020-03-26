@@ -1,15 +1,19 @@
 package com.maksym.projectmanagement.util;
 
 import com.maksym.projectmanagement.controller.*;
-import com.maksym.projectmanagement.repository.*;
+import com.maksym.projectmanagement.repository.ProjectRepository;
+import com.maksym.projectmanagement.repository.SkillRepository;
+import com.maksym.projectmanagement.repository.TeamRepository;
+import com.maksym.projectmanagement.repository.UserRepository;
+import com.maksym.projectmanagement.repository.hibernate.*;
 import com.maksym.projectmanagement.view.*;
 
 public class Initializer {
-    private HibernateCustomerRepository hibernateCustomerRepository;
-    private HibernateProjectRepository hibernateProjectRepository;
-    private HibernateTeamRepository hibernateTeamRepository;
-    private HibernateUserRepository hibernateUserRepository;
-    private HibernateSkillRepository hibernateSkillRepository;
+    private HibernateCustomerRepositoryImpl customerRepository;
+    private ProjectRepository projectRepository;
+    private TeamRepository teamRepository;
+    private UserRepository userRepository;
+    private SkillRepository skillRepository;
 
     private UserController userController;
     private SkillController skillController;
@@ -25,22 +29,16 @@ public class Initializer {
     private CustomerView customerView;
 
     public Initializer() {
-        try {
-            Class.forName(Util.getJdbcDriver());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
         initLayers();
         mainView.rootMenu();
     }
 
     private void initLayers() {
-        hibernateSkillRepository = new HibernateSkillRepository();
-        hibernateUserRepository = new HibernateUserRepository();
-        hibernateTeamRepository = new HibernateTeamRepository();
-        hibernateProjectRepository = new HibernateProjectRepository();
-        hibernateCustomerRepository = new HibernateCustomerRepository();
+        skillRepository = new HibernateSkillRepositoryImpl();
+        userRepository = new HibernateUserRepositoryImpl();
+        teamRepository = new HibernateTeamRepositoryImpl();
+        projectRepository = new HibernateProjectRepositoryImpl();
+        customerRepository = new HibernateCustomerRepositoryImpl();
 
         skillController = new SkillController();
         userController = new UserController();
@@ -55,12 +53,12 @@ public class Initializer {
         projectView = new ProjectView();
         customerView = new CustomerView();
 
-        userController.setUserRepository(hibernateUserRepository);
+        userController.setUserRepository(userRepository);
         userController.setSkillController(skillController);
-        skillController.setSkillRepository(hibernateSkillRepository);
-        teamController.setTeamRepository(hibernateTeamRepository);
-        projectController.setProjectRepository(hibernateProjectRepository);
-        customerController.setCustomerRepository(hibernateCustomerRepository);
+        skillController.setSkillRepository(skillRepository);
+        teamController.setTeamRepository(teamRepository);
+        projectController.setProjectRepository(projectRepository);
+        customerController.setHibernateCustomerRepositoryImpl(customerRepository);
 
         mainView.setUserView(userView);
         mainView.setSkillView(skillView);

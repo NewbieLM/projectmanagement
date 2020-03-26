@@ -1,22 +1,22 @@
-package com.maksym.projectmanagement.repository;
+package com.maksym.projectmanagement.repository.hibernate;
 
 import com.maksym.projectmanagement.model.Customer;
+import com.maksym.projectmanagement.repository.CustomerRepository;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.maksym.projectmanagement.util.Util.getSessionFactory;
+import static com.maksym.projectmanagement.util.HibernateUtil.getSessionFactory;
 
 
-public class HibernateCustomerRepository {
+public class HibernateCustomerRepositoryImpl implements CustomerRepository {
     public List<Customer> getAll() {
         List<Customer> customers;
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        customers = session.createQuery("FROM Customer").list();
+        customers = session.createQuery("FROM Customer").getResultList();
         session.getTransaction().commit();
         return customers;
     }
@@ -38,11 +38,12 @@ public class HibernateCustomerRepository {
         return customer;
     }
 
-    public void update(Customer customer) {
+    public Customer update(Customer customer) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.merge(customer);
         session.getTransaction().commit();
+        return customer;
     }
 
     public boolean delete(Integer customerId) {

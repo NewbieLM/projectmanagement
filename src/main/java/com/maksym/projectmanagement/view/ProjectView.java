@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.maksym.projectmanagement.util.Util.*;
+import static com.maksym.projectmanagement.util.IOUtil.*;
 
 public class ProjectView {
     private ProjectController projectController;
@@ -86,8 +86,8 @@ public class ProjectView {
             elementId = readNumberFromConsole("Please enter the number of the needed section");
             switch (elementId) {
                 case 1:
-                    String newDescription = readFromConsole("Enter new project description");
-                    project.setDescription(newDescription);
+                    String newName = readFromConsole("Enter new project description");
+                    project.setName(newName);
                     projectController.update(project);
                     break;
                 case 2:

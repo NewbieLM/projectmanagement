@@ -8,14 +8,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "customers")
-public class Customer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Integer id;
-
-    @Column(name = "name", nullable = false)
-    private String name;
+public class Customer extends AbstractNamedEntity {
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "customer_projects",
@@ -28,8 +21,7 @@ public class Customer {
     }
 
     public Customer(Integer id, String name, Map<Project, Integer> projects) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
         this.projects = projects;
     }
 
@@ -39,22 +31,6 @@ public class Customer {
 
     public Customer(String name) {
         this(null, name, new HashMap<>());
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Map<Project, Integer> getProjects() {
@@ -75,7 +51,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        String str = "id=" + id + ", name='" + name + "\n";
+        String str = "id=" + super.getId() + ", name='" + super.getName() + "\n";
         if (Hibernate.isInitialized(projects) && projects.keySet().size() > 0) {
             str += projectsToString();
         } else {
@@ -98,19 +74,4 @@ public class Customer {
         return stringBuilder.toString();
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Customer customer = (Customer) o;
-
-        return id != null ? id.equals(customer.id) : customer.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

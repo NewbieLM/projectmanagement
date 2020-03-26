@@ -1,12 +1,12 @@
 package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Team;
-import com.maksym.projectmanagement.repository.HibernateTeamRepository;
+import com.maksym.projectmanagement.repository.TeamRepository;
 
 import java.util.List;
 
 public class TeamController {
-    private HibernateTeamRepository teamRepository;
+    private TeamRepository teamRepository;
 
     public List<Team> getAll() {
         return teamRepository.getAll();
@@ -28,7 +28,7 @@ public class TeamController {
         return teamRepository.delete(teamId);
     }
 
-    public void setTeamRepository(HibernateTeamRepository teamRepository) {
+    public void setTeamRepository(TeamRepository teamRepository) {
         this.teamRepository = teamRepository;
     }
 }

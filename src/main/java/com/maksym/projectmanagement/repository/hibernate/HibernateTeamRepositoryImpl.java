@@ -1,20 +1,20 @@
-package com.maksym.projectmanagement.repository;
+package com.maksym.projectmanagement.repository.hibernate;
 
 import com.maksym.projectmanagement.model.Team;
-import org.hibernate.Hibernate;
+import com.maksym.projectmanagement.repository.TeamRepository;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.maksym.projectmanagement.util.Util.getSessionFactory;
+import static com.maksym.projectmanagement.util.HibernateUtil.getSessionFactory;
 
-public class HibernateTeamRepository {
+public class HibernateTeamRepositoryImpl implements TeamRepository {
 
     public List<Team> getAll() {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<Team> teams = session.createQuery("FROM Team").list();
+        List<Team> teams = session.createQuery("FROM Team").getResultList();
         session.getTransaction().commit();
         return teams;
     }
@@ -22,8 +22,9 @@ public class HibernateTeamRepository {
     public Team get(Integer teamId) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Team team = session.get(Team.class, teamId);
-        Hibernate.initialize(team.getUsers());
+        Query query = session.createQuery("FROM Team t JOIN FETCH t.users WHERE t.id=:id");
+        query.setParameter("id", teamId);
+        Team team = (Team) query.getSingleResult();
         session.getTransaction().commit();
         return team;
     }
@@ -36,11 +37,12 @@ public class HibernateTeamRepository {
         return team;
     }
 
-    public void update(Team team) {
+    public Team update(Team team) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.merge(team);
         session.getTransaction().commit();
+        return team;
     }
 
     public boolean delete(Integer teamId) {

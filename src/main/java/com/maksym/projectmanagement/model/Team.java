@@ -1,8 +1,6 @@
 package com.maksym.projectmanagement.model;
 
 import org.hibernate.Hibernate;
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -10,15 +8,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "teams")
-public class Team {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true)
-    private Integer id;
-
-    @Column(name = "description", nullable = false)
-    private String description;
+public class Team extends AbstractNamedEntity {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -26,40 +16,22 @@ public class Team {
             joinColumns = @JoinColumn(name = "team_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    @Fetch(FetchMode.SUBSELECT)
     private List<User> users;
 
     public Team() {
     }
 
-    public Team(Integer id, String description, List<User> users) {
-        this.id = id;
-        this.description = description;
+    public Team(Integer id, String name, List<User> users) {
+        super(id, name);
         this.users = users;
     }
 
-    public Team(Integer id, String description) {
-        this(id, description, new ArrayList<>());
+    public Team(Integer id, String name) {
+        this(id, name, new ArrayList<>());
     }
 
-    public Team(String description) {
-        this(null, description, new ArrayList<>());
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    public Team(String name) {
+        this(null, name, new ArrayList<>());
     }
 
     public List<User> getUsers() {
@@ -80,12 +52,11 @@ public class Team {
 
     @Override
     public String toString() {
-        String str = "id=" + id + ", description=" + description + "\n";
+        String str = "id=" + super.getId() + ", description=" + super.getName() + "\n";
         if (Hibernate.isInitialized(users) && users.size() > 0) {
             str += usersToString();
         }
         str += "=========================";
-
         return str;
     }
 
@@ -101,18 +72,4 @@ public class Team {
         return stringBuilder.toString();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Team team = (Team) o;
-
-        return id != null ? id.equals(team.id) : team.id == null;
-    }
-
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

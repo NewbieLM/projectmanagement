@@ -1,17 +1,12 @@
 package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Skill;
-import com.maksym.projectmanagement.repository.HibernateSkillRepository;
+import com.maksym.projectmanagement.repository.SkillRepository;
 
 import java.util.List;
 
 public class SkillController {
-    private HibernateSkillRepository skillRepository;
-
-
-    public void setSkillRepository(HibernateSkillRepository skillRepository) {
-        this.skillRepository = skillRepository;
-    }
+    private SkillRepository skillRepository;
 
     public List<Skill> getAllSkills() {
         return skillRepository.getAll();
@@ -19,7 +14,7 @@ public class SkillController {
 
     public Skill addNewSkill(String description) {
         Skill skill = new Skill(description);
-        skill = skillRepository.saveNewSkill(skill);
+        skill = skillRepository.save(skill);
         return skill;
     }
 
@@ -29,6 +24,10 @@ public class SkillController {
     }
 
     public void updateSkill(Skill skill) {
-        skillRepository.updateSkill(skill);
+        skillRepository.update(skill);
+    }
+
+    public void setSkillRepository(SkillRepository skillRepository) {
+        this.skillRepository = skillRepository;
     }
 }

@@ -1,27 +1,30 @@
-package com.maksym.projectmanagement.repository;
+package com.maksym.projectmanagement.repository.hibernate;
 
 import com.maksym.projectmanagement.model.User;
+import com.maksym.projectmanagement.repository.UserRepository;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
 import java.util.List;
 
-import static com.maksym.projectmanagement.util.Util.getSessionFactory;
+import static com.maksym.projectmanagement.util.HibernateUtil.getSessionFactory;
 
-public class HibernateUserRepository {
+public class HibernateUserRepositoryImpl implements UserRepository {
 
     public List<User> getAll() {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        List<User> users = session.createQuery("FROM User").list();
+        List<User> users = session.createQuery("FROM User").getResultList();
         session.getTransaction().commit();
         return users;
     }
 
-    public User get(Integer usersId) {
+    public User get(Integer userId) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        User user = session.get(User.class, usersId);
+        Query query = session.createQuery("FROM User u JOIN FETCH u.skills WHERE u.id=:id");
+        query.setParameter("id", userId);
+        User user = (User) query.getSingleResult();
         session.getTransaction().commit();
         return user;
     }
@@ -35,11 +38,12 @@ public class HibernateUserRepository {
     }
 
 
-    public void update(User user) {
+    public User update(User user) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.merge(user);
         session.getTransaction().commit();
+        return user;
     }
 
 

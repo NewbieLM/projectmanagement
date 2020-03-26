@@ -1,7 +1,6 @@
 package com.maksym.projectmanagement.model;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,25 +8,14 @@ import java.util.List;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User extends AbstractNamedEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false)
-    private Integer id;
-
-    @Column(name = "name", nullable = false)
-    private String name;
-
-
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_skills",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "skill_id")
     )
-    @Fetch(FetchMode.SUBSELECT)
-    // @BatchSize(size = 100)
     private List<Skill> skills;
 
 
@@ -35,8 +23,7 @@ public class User {
     }
 
     public User(Integer id, String name, List<Skill> skills) {
-        this.id = id;
-        this.name = name;
+        super(id, name);
         this.skills = skills;
     }
 
@@ -69,41 +56,17 @@ public class User {
         this.skills = skills;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
-        return "id=" + id +
-                ", name='" + name + '\'' + "\n" +
-                "skills:" + skills + "\n";
+        String str = "id=" + super.getId() + ", name='" + super.getName() + '\'' + "\n";
+        if (Hibernate.isInitialized(skills) && skills.size() > 0) {
+            str += skillsToString();
+        }
+        return str;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        User user = (User) o;
-
-        return id != null ? id.equals(user.id) : user.id == null;
+    private String skillsToString() {
+        return "skills:" + skills + "\n";
     }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-    }
 }

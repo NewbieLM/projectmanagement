@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.maksym.projectmanagement.util.Util.*;
+import static com.maksym.projectmanagement.util.IOUtil.*;
 
 public class UserView {
     private MainView mainView;

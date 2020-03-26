@@ -1,12 +1,12 @@
 package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Project;
-import com.maksym.projectmanagement.repository.HibernateProjectRepository;
+import com.maksym.projectmanagement.repository.ProjectRepository;
 
 import java.util.List;
 
 public class ProjectController {
-    private HibernateProjectRepository projectRepository;
+    private ProjectRepository projectRepository;
 
     public Project save(Project project) {
         return projectRepository.save(project);
@@ -21,14 +21,14 @@ public class ProjectController {
     }
 
     public void update(Project project) {
-        projectRepository.updateProject(project);
+        projectRepository.update(project);
     }
 
     public boolean delete(Integer projectId) {
         return projectRepository.delete(projectId);
     }
 
-    public void setProjectRepository(HibernateProjectRepository projectRepository) {
+    public void setProjectRepository(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
     }
 }

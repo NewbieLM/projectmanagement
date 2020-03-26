@@ -1,32 +1,31 @@
-package com.maksym.projectmanagement.repository;
+package com.maksym.projectmanagement.repository.hibernate;
 
 import com.maksym.projectmanagement.model.Project;
-import org.hibernate.Hibernate;
+import com.maksym.projectmanagement.repository.ProjectRepository;
 import org.hibernate.Session;
 
 import javax.persistence.Query;
-import java.util.ArrayList;
 import java.util.List;
 
-import static com.maksym.projectmanagement.util.Util.getSessionFactory;
+import static com.maksym.projectmanagement.util.HibernateUtil.getSessionFactory;
 
-public class HibernateProjectRepository {
+public class HibernateProjectRepositoryImpl implements ProjectRepository {
 
     public List<Project> getAll() {
         List<Project> projects;
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        projects = session.createQuery("FROM Project").list();
+        projects = session.createQuery("FROM Project").getResultList();
         session.getTransaction().commit();
         return projects;
     }
 
     public Project get(Integer projectId) {
-        Project project;
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        project = session.get(Project.class, projectId);
-        Hibernate.initialize(project.getTeams());
+        Query query = session.createQuery("FROM Project p JOIN FETCH p.teams WHERE p.id=:id");
+        query.setParameter("id", projectId);
+        Project project = (Project) query.getSingleResult();
         session.getTransaction().commit();
         return project;
     }
@@ -39,11 +38,12 @@ public class HibernateProjectRepository {
         return project;
     }
 
-    public void updateProject(Project project) {
+    public Project update(Project project) {
         Session session = getSessionFactory().getCurrentSession();
         session.beginTransaction();
         session.merge(project);
         session.getTransaction().commit();
+        return project;
     }
 
     public boolean delete(Integer projectId) {

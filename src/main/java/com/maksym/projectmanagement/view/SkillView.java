@@ -6,7 +6,7 @@ import com.maksym.projectmanagement.model.Skill;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.maksym.projectmanagement.util.Util.*;
+import static com.maksym.projectmanagement.util.IOUtil.*;
 
 public class SkillView {
     private SkillController skillController;
@@ -41,7 +41,7 @@ public class SkillView {
     private void addNewSkill() {
         String description = readFromConsole("To add a new skill, enter a description of this skill");
         Skill skill = skillController.addNewSkill(description);
-        writeToConsole(skill.getId() != null || skill.getId() > 0 ? "SUCCESS" : "FAILED");
+        writeToConsole(skill != null && skill.getId() > 0 ? "SUCCESS" : "FAILED");
         writeToConsole(skill);
     }
 
@@ -59,7 +59,7 @@ public class SkillView {
 
         writeToConsole(skill);
         String newDescription = readFromConsole("Enter new description");
-        skill.setDescription(newDescription);
+        skill.setName(newDescription);
         skillController.updateSkill(skill);
         writeToConsole(skill);
     }

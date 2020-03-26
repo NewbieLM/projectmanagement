@@ -2,13 +2,13 @@ package com.maksym.projectmanagement.controller;
 
 import com.maksym.projectmanagement.model.Skill;
 import com.maksym.projectmanagement.model.User;
-import com.maksym.projectmanagement.repository.HibernateUserRepository;
+import com.maksym.projectmanagement.repository.UserRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserController {
-    private HibernateUserRepository userRepository;
+    private UserRepository userRepository;
     private SkillController skillController;
 
     public User saveUser(String name, String userSkills) {
@@ -16,7 +16,7 @@ public class UserController {
         List<Skill> skills = new ArrayList<>();
         for (String userSkill : userSkills.trim().split("\\s+")) {
             for (Skill skill : savedSkills) {
-                if (skill.getDescription().equalsIgnoreCase(userSkill)) {
+                if (skill.getName().equalsIgnoreCase(userSkill)) {
                     skills.add(skill);
                     break;
                 }
@@ -43,8 +43,7 @@ public class UserController {
         return userRepository.delete(userId);
     }
 
-
-    public void setUserRepository(HibernateUserRepository userRepository) {
+    public void setUserRepository(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
